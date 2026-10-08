@@ -5,3 +5,6 @@ wrangler.jsonc
 .env.example
 .gitignore
 README*.md
+.git
+.wrangler
+node_modules
