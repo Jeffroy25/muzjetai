@@ -2,7 +2,7 @@
 
 This package is prepared for Cloudflare Pages **Git integration**. The website files and the `functions/` directory are at the repository root.
 
-## Deploy
+## Deploy 
 
 1. Create a new GitHub repository, e.g. `muzjetai`.
 2. Upload **the contents of this folder** to the repository root (do not upload the parent folder itself).
