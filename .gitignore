@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.netlify/
+
+# Cloudflare/local secrets
+.dev.vars*
+.wrangler/
