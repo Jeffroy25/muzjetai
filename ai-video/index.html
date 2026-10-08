@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MuzjetAI — AI Video Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Anton&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fa;--ink:#182033;--muted:#7a8497;--line:#e5e9f1;--card:#fff;--blue:#3568e8;--blue2:#edf2ff;--dark:#111827;--green:#18a56b;--red:#e43d55}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:500 14px/1.45 Barlow,system-ui,sans-serif}
+button,input,textarea,select{font:inherit}.shell{min-height:100vh;display:flex}.side{position:fixed;width:238px;inset:0 auto 0 0;background:#fff;border-right:1px solid var(--line);padding:22px 14px;z-index:10;display:flex;flex-direction:column}.brand{font-weight:800;font-size:20px;padding:0 10px 28px}.brand i{display:inline-grid;place-items:center;background:var(--blue);color:#fff;width:24px;height:24px;border-radius:7px;font-style:normal;margin-right:7px}.label{font-size:10px;color:#98a1b1;letter-spacing:.12em;padding:0 10px 8px}.nav{display:grid;gap:3px}.nav a{padding:11px;border-radius:8px;text-decoration:none;color:#697386;font-weight:600}.nav a.active,.nav a:hover{background:var(--blue2);color:#315fd8}.spacer{flex:1}.side small{color:#9aa3b4;padding:10px}.main{margin-left:238px;flex:1;min-width:0}.top{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:8}.top strong{font-size:18px}.top .actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 13px;font-weight:700;cursor:pointer}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.dark{background:var(--dark);color:#fff;border-color:var(--dark)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.workspace{padding:22px;display:grid;grid-template-columns:330px minmax(420px,1fr) 290px;gap:16px;max-width:1600px;margin:auto}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}.panel h3{margin:0;padding:15px 16px;border-bottom:1px solid var(--line);font-size:14px}.body{padding:15px}.field{display:grid;gap:6px;margin-bottom:13px}.field span{font-size:12px;font-weight:700;color:#657086}.input,.select,textarea{width:100%;border:1px solid #dce1ea;border-radius:8px;background:#fff;padding:10px 11px;outline:none}.input:focus,textarea:focus,.select:focus{border-color:#7e9bf2;box-shadow:0 0 0 3px #edf2ff}textarea{min-height:180px;resize:vertical}.row{display:flex;gap:8px}.row>*{flex:1}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer}.chip.active{background:var(--blue2);border-color:#b8c9ff;color:#315fd8}.progress{height:7px;background:#edf0f5;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:var(--blue);transition:.25s}.msg{font-size:12px;color:var(--muted);margin-top:9px}.hidden{display:none!important}
+.preview-wrap{background:#111827;padding:18px;min-height:430px;display:flex;align-items:center;justify-content:center}.preview{width:min(100%,760px);aspect-ratio:16/9;background:#050505;border-radius:8px;position:relative;overflow:hidden;box-shadow:0 12px 35px #0004}.preview img{width:100%;height:100%;object-fit:cover;display:block}.shade{position:absolute;inset:0;background:linear-gradient(transparent 45%,#000b)}.caption{position:absolute;left:7%;right:7%;bottom:11%;text-align:center;color:#fff;font-weight:800;font-size:clamp(18px,3vw,36px);text-shadow:0 2px 5px #000}.caption b{color:#ffe36e}.scene-title{padding:10px 16px;border-top:1px solid #273044;background:#151c2b;color:#cbd3e3;font-size:12px}.transport{display:flex;align-items:center;gap:9px;padding:10px 14px;background:#111827;color:#fff}.transport input{flex:1}.time{font-variant-numeric:tabular-nums;color:#b7c0d0;font-size:12px}
+.timeline{border-top:1px solid var(--line);background:#f9fafc}.track{display:flex;align-items:stretch;border-bottom:1px solid var(--line);min-height:48px}.track-name{width:82px;flex:none;padding:13px 10px;font-size:11px;font-weight:800;color:#737d90;background:#fff;border-right:1px solid var(--line)}.clips{display:flex;gap:3px;padding:5px;overflow:hidden;min-width:0}.clip{min-width:90px;background:#eaf0ff;border:1px solid #c9d6ff;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:11px;overflow:hidden}.clip.active{outline:2px solid var(--blue)}.clip strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.clip small{color:#65708a}.asset-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.asset{border:1px solid var(--line);border-radius:7px;overflow:hidden;cursor:pointer;background:#fff}.asset img{width:100%;height:72px;object-fit:cover;display:block}.asset div{padding:5px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tabs{display:flex;border-bottom:1px solid var(--line)}.tab{flex:1;padding:11px;border:0;background:#fff;cursor:pointer;font-weight:700;font-size:12px}.tab.active{color:var(--blue);border-bottom:2px solid var(--blue)}.scene-list{max-height:430px;overflow:auto}.scene{padding:11px 13px;border-bottom:1px solid var(--line);cursor:pointer}.scene.active{background:var(--blue2)}.scene strong{font-size:12px}.scene p{margin:3px 0 0;color:#7d8799;font-size:11px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.tag{display:inline-block;font-size:9px;background:#eef2f7;border-radius:4px;padding:2px 5px;margin-top:5px;color:#677288}.mini{font-size:11px;color:var(--muted)}.switch{display:flex;align-items:center;gap:8px;font-size:12px;margin:10px 0}.notice{background:#f7f9fd;border:1px solid #e3e8f1;border-radius:8px;padding:10px;font-size:11px;color:#697386}.mobile{display:none}
+@media(max-width:1100px){.workspace{grid-template-columns:280px minmax(400px,1fr)}.right{display:none}}@media(max-width:760px){.side{display:none}.main{margin-left:0}.mobile{display:block}.workspace{grid-template-columns:1fr;padding:10px}.left{order:2}.center{order:1}.top{padding:0 12px}.preview-wrap{padding:8px}.track-name{width:62px}.clip{min-width:75px}}
+
+.bgpick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0}.bgpick button{aspect-ratio:16/9;border:2px solid transparent;border-radius:6px;padding:0;cursor:pointer;background-size:cover;background-position:center;position:relative}.bgpick button.on{border-color:#4f7cff;box-shadow:0 0 0 2px #dbe5ff}.bgpick button.on::after{content:"✓";position:absolute;right:3px;top:2px;color:#fff;font-size:12px;font-weight:800;text-shadow:0 1px 3px #000}
+.caption.cs-impact{font-family:Impact,Anton,sans-serif;text-transform:uppercase;letter-spacing:.02em;-webkit-text-stroke:1px #000}
+.caption.cs-clean{font-weight:600;background:#0009;display:inline-block;padding:6px 14px;border-radius:8px;left:50%;right:auto;transform:translateX(-50%);text-shadow:none;width:max-content;max-width:86%}
+.caption.cs-karaoke b,.caption.cs-karaoke{color:#fff}.caption.cs-karaoke b{background:#ffe36e;color:#111;padding:0 5px;border-radius:4px}
+.caption.cs-minimal{font-weight:400;font-size:clamp(14px,2vw,22px);text-shadow:0 1px 3px #000}
+.caption.cs-bounce{animation:capb .6s ease-out}@keyframes capb{0%{transform:translateY(18px) scale(.9);opacity:0}60%{transform:translateY(-6px) scale(1.04);opacity:1}100%{transform:none}}
+
+/* ===== editor polish ===== */
+:root{--bg:#eef1f7}
+.top{background:linear-gradient(90deg,#fff,#f6f8ff)}
+.panel{box-shadow:0 4px 18px #1a24430d}
+.btn{transition:.15s}.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 3px 10px #1a244318}
+.preview .layer{position:absolute;inset:0;overflow:hidden}
+.preview img,.preview video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.preview .shade{z-index:2}.preview .caption{z-index:3}.preview .scene-title{position:absolute;left:0;right:0;bottom:0;z-index:4;background:#000a}
+.preview .ovr{position:absolute;z-index:3;left:6%;top:8%;right:6%;color:#fff;font:800 clamp(18px,3.4vw,40px)/1.1 Anton,Impact,sans-serif;text-transform:uppercase;text-shadow:0 3px 8px #000}
+.fx-bw{filter:grayscale(1) contrast(1.1)}.fx-warm{filter:sepia(.35) saturate(1.3) hue-rotate(-8deg)}.fx-cool{filter:saturate(1.1) hue-rotate(12deg) brightness(1.03)}.fx-vivid{filter:saturate(1.6) contrast(1.1)}.fx-cinema{filter:contrast(1.15) saturate(.9) brightness(.95)}
+.fx-vignette::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 120px 30px #000c;pointer-events:none}
+@keyframes kb-zoomin{from{transform:scale(1)}to{transform:scale(var(--z,1.2))}}
+@keyframes kb-zoomout{from{transform:scale(var(--z,1.2))}to{transform:scale(1)}}
+@keyframes kb-panleft{from{transform:scale(var(--z,1.2)) translateX(4%)}to{transform:scale(var(--z,1.2)) translateX(-4%)}}
+@keyframes kb-panright{from{transform:scale(var(--z,1.2)) translateX(-4%)}to{transform:scale(var(--z,1.2)) translateX(4%)}}
+@keyframes kb-zoominpan{from{transform:scale(1) translate(2%,2%)}to{transform:scale(var(--z,1.2)) translate(-2%,-2%)}}
+@keyframes tr-crossfade{from{opacity:0}to{opacity:1}}
+@keyframes tr-dip{0%{opacity:0}100%{opacity:1}}
+@keyframes tr-slide{from{transform:translateX(100%)}to{transform:none}}
+@keyframes tr-slideup{from{transform:translateY(100%)}to{transform:none}}
+@keyframes tr-zoom{from{transform:scale(1.5);opacity:0}to{transform:none;opacity:1}}
+@keyframes tr-wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes tr-blur{from{filter:blur(24px);opacity:0}to{filter:blur(0);opacity:1}}
+.clipbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border-top:1px solid var(--line)}.clipbar strong{font-size:13px}.clipbar .mini{color:var(--muted);font-size:12px}
+.clipstrip{display:grid;grid-auto-flow:column;grid-auto-columns:196px;gap:12px;overflow-x:auto;padding:4px 14px 16px;background:#fff;scroll-snap-type:x proximity}
+.cc{scroll-snap-align:start;border:2px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:.15s}.cc:hover{box-shadow:0 6px 18px #1a244320}.cc.active{border-color:var(--blue);box-shadow:0 0 0 3px #dbe5ff}
+.cc-media{position:relative;aspect-ratio:16/9;background:#0b1020}.cc-media img,.cc-media video{width:100%;height:100%;object-fit:cover;display:block}
+.cc-n,.cc-d{position:absolute;top:6px;background:#000b;color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px}.cc-n{left:6px}.cc-d{right:6px}.cc-d.long{background:var(--red)}
+.cc-fx{position:absolute;left:6px;bottom:6px;right:6px;display:flex;gap:4px;flex-wrap:wrap}.cc-fx span{background:#ffffffe6;color:#25314d;font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px}
+.cc-text{margin:0;padding:8px 10px;font-size:12px;line-height:1.4;color:#3b465c;height:5.6em;overflow:hidden}
+.cc-act{display:flex;gap:4px;padding:0 8px 8px}.cc-act button{flex:1;border:1px solid var(--line);background:#f6f8fc;border-radius:7px;padding:5px 0;font-size:12px;cursor:pointer;font-weight:700}.cc-act button:hover{background:var(--blue2)}.cc-act button[data-a=replace]{flex:2.4;background:var(--blue2);color:#315fd8;border-color:#c9d6ff}
+.cc.empty{display:grid;place-items:center;min-height:160px;color:var(--muted);font-size:13px;border-style:dashed;cursor:default}
+.fxgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sechead{font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a94a8;margin:14px 0 8px;text-transform:uppercase}
+@media(max-width:1100px){.right{display:block!important;grid-column:1/-1}}
+@media(max-width:760px){.workspace{grid-template-columns:1fr}.center{order:1}.right{order:2}.left{order:3}.clipstrip{grid-auto-columns:168px}}
+.workspace{grid-template-columns:330px minmax(420px,1fr) 340px}.fxgrid .select{padding:9px 8px;font-size:13px}.right .btn{font-size:13px;padding:9px 8px}
+.clip-editor-side{border-bottom:1px solid var(--line);background:#f8faff}.clip-editor-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line)}.clip-editor-list{display:grid;gap:7px;padding:10px;max-height:390px;overflow:auto}.clip-editor-list .cc{border-width:1px}.clip-editor-list .cc-media{aspect-ratio:16/9}.clip-editor-list .cc-text{height:4.2em;font-size:11px}.clip-editor-list .cc-act{padding-bottom:6px}.clipstrip-old{display:none}.audio-preflight{border:1px solid #cdd9f8;background:linear-gradient(180deg,#f8faff,#fff);border-radius:10px;padding:12px;margin:12px 0}.audio-preflight h4{margin:0 0 8px;font-size:13px}.audio-preflight .mini{line-height:1.35}.audio-preflight.ready{border-color:#b8e1cc;background:#f4fbf7}.audio-status{margin-top:8px;font-size:11px;color:#667085}
+@media(max-width:1100px){.workspace{grid-template-columns:280px minmax(400px,1fr)}}@media(max-width:760px){.workspace{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+  <div class="brand"><i>M</i>MuzjetAI</div>
+  <div class="label">CREATE</div>
+  <nav class="nav">
+    <a href="/">Thumbnails</a><a href="/analyzer/">Style Analyzer</a><a href="/scripts/">Scripts</a><a class="active" href="/ai-video/">AI Video Studio</a><a href="/text-to-speech/">Text to Speech AI</a><a href="/video-maker/">Video Maker</a>
+  </nav>
+  <div class="spacer"></div><small>AI video production workspace</small>
+</aside>
+<main class="main">
+<header class="top"><div><strong>AI Video Studio</strong> <span class="mini" id="saveBadge" style="margin-left:8px">💾 Auto-saved in this browser</span><div class="mini">Script → research → voice → captions → editable timeline</div></div><div class="actions"><button class="btn" id="newBtn">New</button><button class="btn primary" id="saveBtn">Save Project</button><button class="btn dark" id="exportBtn">Export Draft</button><button class="btn primary" id="videoMakerBtn">🎬 Open in Video Maker</button></div></header>
+<div class="workspace">
+<section class="panel left">
+  <h3>1. Build your video</h3><div class="body">
+    <label class="field"><span>Topic</span><input id="topic" class="input" placeholder="e.g. The history of Lagos"></label>
+    <label class="field"><span>Script</span>
+      <textarea id="script" placeholder="Paste your narration or generate a script from the topic."></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="uploadScriptBtn" type="button">📄 Upload Script</button>
+        <input id="scriptFile" type="file" accept=".txt,.md,.srt,.vtt,.csv,text/plain,text/markdown,text/vtt" class="hidden">
+        <span class="mini" id="scriptFileName">TXT, MD, SRT or VTT</span>
+      </div>
+    </label>
+    <div class="row"><label class="field"><span>Length</span><select id="length" class="select"><option value="60">1 min</option><option value="180">3 min</option><option value="300" selected>5 min</option><option value="600">10 min</option><option value="1200">20 min</option><option value="1800">30 min</option></select></label><label class="field"><span>Format</span><select id="format" class="select"><option>16:9 YouTube</option><option>9:16 Shorts</option><option>1:1 Square</option></select></label></div>
+    <label class="field"><span>Style</span><div class="chips"><button class="chip active">Documentary</button><button class="chip">News</button><button class="chip">Explainer</button><button class="chip">Top 10</button></div></label>
+    <button class="btn primary" id="generate" style="width:100%">✨ Analyze & Build Scenes</button>
+    <div class="progress" style="margin-top:12px"><i id="bar"></i></div><div class="msg" id="status">Ready.</div>
+  </div>
+  <h3>1b. Background images <span class="mini">(pick 5–10)</span></h3><div class="body">
+    <div class="bgpick" id="bgPick"></div>
+    <div class="row"><button class="btn" id="bgUpload" type="button">＋ Upload own</button><input id="bgFile" type="file" accept="image/*" multiple class="hidden"><button class="btn" id="bgClear" type="button">Clear</button></div>
+    <div class="mini" id="bgCount" style="margin-top:6px">0 selected. Used for scenes before you build the video; scenes cycle through your picks.</div>
+  </div>
+  <h3>1c. Auto stock media</h3><div class="body">
+    <label class="switch"><input id="autoMedia" type="checkbox" checked> Auto-find free stock media for every scene</label>
+    <label class="field" style="margin-top:10px"><span>Search for</span><select id="mediaKind" class="select"><option value="image">Photos only (fastest)</option><option value="both">Photos + short videos</option></select></label>
+    <label class="field"><span>Source style</span><select id="mediaSources" class="select"><option value="">Best match (all sources)</option><option value="archive,loc,wikimedia,nasa,smithsonian,flickr,openverse">Historical &amp; news-style archives</option><option value="nasa,wikimedia,smithsonian,openverse,pexels,pixabay">Science &amp; space</option><option value="pexels,pixabay,unsplash,openverse">Modern stock photos &amp; video</option></select></label>
+    <button class="btn primary" id="autoFillBtn" type="button" style="width:100%">🔎 Auto-fill media now</button>
+    <div class="progress" style="margin-top:10px"><i id="amBar"></i></div><div class="msg" id="amStatus">Searches Pixabay, Pexels, Unsplash (if keys are set), Openverse and Wikimedia Commons, saves each pick in your browser, and keeps its credit. Scenes you replaced yourself are never overwritten.</div>
+    <button class="btn" id="copyCredits" type="button" style="width:100%;margin-top:8px">📋 Copy image credits</button>
+  </div>
+  <h3>2. Voiceover</h3><div class="body">
+    <div class="row"><button class="btn" id="voiceUploadBtn">Upload Voice</button><input id="voiceFile" type="file" accept="audio/*" class="hidden"><button class="btn primary" id="ttsBtn">🎙 Text to Speech AI</button></div>
+    <audio id="audio" controls style="width:100%;margin-top:10px;display:none"></audio>
+    <div class="notice" style="margin-top:12px"><strong>Free AI voiceover</strong><br>Generate narration locally in your browser with Kokoro. No paid TTS API or character quota. Supports long scripts, including 10+ minute narration.</div>
+    <div class="row" style="margin-top:10px"><a class="btn" href="/text-to-speech/" style="flex:1;text-decoration:none">Open Text to Speech AI</a><button class="btn" id="loadTtsBtn" style="flex:1">Load latest voice</button></div>
+  </div>
+  <h3>3. Auto Captions</h3><div class="body">
+    <label class="switch"><input id="captions" type="checkbox" checked> Automatic captions</label>
+    <div class="row"><button class="btn primary" id="autoCaptionBtn">✨ Generate Auto Captions</button><select id="captionLanguage" class="select"><option value="auto">Auto detect</option><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option><option value="hi">Hindi</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="pt">Portuguese</option><option value="zh">Chinese</option></select></div>
+    <label class="switch"><input id="boldWords" type="checkbox" checked> Bold important words</label>
+    <select id="captionStyle" class="select"><option value="impact">Impact — bold</option><option value="clean">Clean</option><option value="karaoke">Karaoke</option><option value="minimal">Minimal</option><option value="bounce">Bounce</option></select>
+    <div class="notice" id="captionStatus" style="margin-top:10px"><strong>Local captions</strong><br>Creates caption cues from your narration now. For spoken-audio transcription, the project is prepared for a local Whisper/FFmpeg pipeline with no paid API.</div>
+  </div>
+
+  <h3>4. Background Music</h3><div class="body">
+    <label class="field"><span>Video type / mood</span><select id="musicType" class="select"><option value="documentary">🎬 Documentary</option><option value="cinematic">🔥 Cinematic / Drama</option><option value="horror">👻 Horror / Mystery</option><option value="cozy">💛 Emotional / Cozy</option><option value="adventure">⚔️ Adventure</option><option value="afrobeats">🌍 Afrobeats</option><option value="hiphop">🎤 Hip-Hop / Trap</option><option value="lofi">☕ Lo-fi / Chill</option><option value="scifi">🚀 Sci-Fi / Technology</option></select></label>
+    <label class="field"><span>Music track</span><select id="musicTrack" class="select"></select></label>
+    <div class="row"><label class="field"><span>Music volume <b id="musicVolValue">15%</b></span><input id="musicVol" type="range" min="0" max="40" value="15"></label><label class="field"><span>Voice volume <b id="voiceVolValue">100%</b></span><input id="voiceVol" type="range" min="50" max="120" value="100"></label></div>
+    <button class="btn" id="previewMusic" style="width:100%">▶ Preview Background Music</button>
+    <audio id="musicAudio" controls style="width:100%;margin-top:10px;display:none"></audio>
+    <div class="notice" style="margin-top:10px"><strong>Free music sources</strong><br>Library entries are selected from open/royalty-free GitHub collections. Always keep the track license with the exported project.</div>
+  </div>
+</section>
+
+<section class="panel center">
+  <div class="preview-wrap"><div class="preview" id="preview"><img id="heroPrev" class="layer" alt=""><div class="layer" id="stage"><img id="hero" alt=""><video id="heroVideo" muted playsinline loop class="hidden"></video></div><div class="shade"></div><div class="ovr" id="ovr"></div><div class="caption" id="caption">Your video preview</div><div class="scene-title" id="sceneTitle">Scene 1</div></div></div>
+  <div class="transport"><button class="btn" id="playBtn">▶</button><input id="scrub" type="range" min="0" max="100" value="0"><span class="time" id="time">00:00 / 00:00</span></div>
+  <div class="timeline">
+    <div class="track"><div class="track-name">SCENES</div><div class="clips" id="sceneTrack"></div></div>
+    <div class="track"><div class="track-name">CAPTIONS</div><div class="clips" id="captionTrack"></div></div>
+    <div class="track"><div class="track-name">VOICE</div><div class="clips" id="voiceTrack"><div class="clip"><strong>Voiceover</strong><small id="voiceLen">No audio</small></div></div></div>
+    <div class="track"><div class="track-name">MUSIC</div><div class="clips" id="musicTrackTimeline"><div class="clip"><strong>Background Music</strong><small id="musicLen">No track</small></div></div></div>
+  </div>
+  <div class="clipbar"><strong>🎞 Timeline <span class="mini" id="clipInfo"></span></strong><span class="mini">Scene cards are in the right sidebar</span></div>
+  <input id="replaceFile" type="file" accept="image/*,video/*" class="hidden">
+</section>
+
+<section class="panel right">
+  <div class="clip-editor-side"><div class="clip-editor-head"><strong>🎞 Scene Clips</strong><span class="mini">Vertical editor</span></div><div class="clip-editor-list" id="clipStripSide"></div></div>
+  <div class="tabs"><button class="tab active" data-tab="sceneTab">Scene</button><button class="tab" data-tab="mediaTab">Media</button><button class="tab" data-tab="textTab">Text</button></div>
+  <div id="sceneTab" class="body"><label class="field"><span>Scene title</span><input id="sceneName" class="input"></label><label class="field"><span>Narration</span><textarea id="sceneNarration" style="min-height:120px"></textarea></label><div class="mini" id="sceneWords" style="margin:-6px 0 10px"></div>
+<div class="row" style="margin-bottom:6px"><button class="btn" id="replaceBtn" type="button">🖼 Replace image / video</button><button class="btn" id="splitBtn" type="button">✂ Split scene</button></div>
+<div class="sechead">Motion &amp; effects</div>
+<div class="fxgrid">
+<label class="field"><span>Zoom / motion</span><select id="scMotion" class="select"><option value="zoomin">🔍 Zoom in</option><option value="zoomout">🔎 Zoom out</option><option value="panleft">⬅ Pan left + zoom</option><option value="panright">➡ Pan right + zoom</option><option value="zoominpan">✨ Zoom in + drift</option><option value="none">⏸ None</option></select></label>
+<label class="field"><span>Strength</span><select id="scStrength" class="select"><option value="1.1">Subtle</option><option value="1.2" selected>Medium</option><option value="1.35">Strong</option></select></label>
+<label class="field"><span>Look</span><select id="scFilter" class="select"><option value="none">Original</option><option value="cinema">Cinematic</option><option value="bw">Black &amp; white</option><option value="warm">Warm</option><option value="cool">Cool</option><option value="vivid">Vivid</option><option value="vignette">Vignette</option></select></label>
+<label class="field"><span>Scene length <b id="scDurVal">8s</b></span><input id="scDur" type="range" min="3" max="25" step="1" value="8"></label>
+</div>
+<div class="sechead">Transition into this scene</div>
+<div class="fxgrid">
+<label class="field"><span>Type</span><select id="scTrans" class="select"><option value="crossfade">Crossfade</option><option value="dip">Dip to black</option><option value="slide">Slide left</option><option value="slideup">Slide up</option><option value="zoom">Zoom in</option><option value="wipe">Wipe</option><option value="blur">Blur</option><option value="none">Cut (none)</option></select></label>
+<label class="field"><span>Speed <b id="scTlenVal">0.8s</b></span><input id="scTlen" type="range" min="0.3" max="2" step="0.1" value="0.8"></label>
+</div>
+<div class="row" style="margin-bottom:12px"><button class="btn" id="applyAllFx" type="button">Apply to all scenes</button><button class="btn primary" id="randomFx" type="button">🎲 Surprise me</button></div>
+<label class="field"><span>Visual search</span><input id="visualQuery" class="input" placeholder="e.g. Lagos skyline aerial"></label><button class="btn" id="searchMedia" style="width:100%">Search visuals</button><div id="mediaProviderStatus" class="mini" style="margin-top:8px"></div><div id="mediaResults" class="asset-grid" style="margin-top:10px"></div></div>
+  <div id="mediaTab" class="body hidden"><button class="btn" id="uploadImage" style="width:100%">Upload image/video</button><input id="mediaFile" type="file" accept="image/*,video/*" class="hidden"><p class="mini">Select an asset to use for the active scene.</p>
+<div class="sechead">Use a link</div>
+<input id="mediaLink" class="input" placeholder="https://… direct link to a .jpg, .png, .mp4 or .webm">
+<label class="switch" style="margin:8px 0"><input id="linkRights" type="checkbox"> I own this or have permission to use it</label>
+<button class="btn primary" id="useLinkBtn" type="button" style="width:100%">Use link for this scene</button>
+<p class="mini" style="margin-top:8px">Works with direct media files from your own accounts, your own website or sources that gave you permission. Social-media and news <em>pages</em> can't be pulled in: download the file yourself (only if you may) and upload it with Replace.</p></div>
+  <div id="textTab" class="body hidden"><label class="field"><span>On-screen text</span><input id="overlayText" class="input" placeholder="Add bold text"></label><label class="switch"><input id="overlayBold" type="checkbox" checked> Bold</label><button class="btn" id="applyText">Apply text</button></div>
+  <div class="body" style="border-top:1px solid var(--line)"><div class="mini">Project status</div><strong id="projectStatus">Draft</strong></div>
+</section>
+</div>
+</main></div>
+<script>
+const $=id=>document.getElementById(id);
+let project={title:"Untitled Video",topic:"",style:"Documentary",format:"16:9 YouTube",duration:300,scenes:[],active:0,voice:null,music:null};
+let playing=false,timer=null,position=0,localAssets=[];
+const demoImages=[
+"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=1200&q=80",
+"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80",
+"https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=80",
+"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80"
+];
+function setStatus(t,p){$("status").textContent=t;if(p!=null)$("bar").style.width=p+"%"}
+function escape(s){return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function fmt(n){n=Math.max(0,Math.round(n));return String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0")}
+function renderScenes(){
+ const st=$("sceneTrack"),ct=$("captionTrack");st.innerHTML="";ct.innerHTML="";
+ project.scenes.forEach((s,i)=>{
+  const c=document.createElement("div");c.className="clip"+(i===project.active?" active":"");c.style.flexBasis=Math.max(90,Math.min(220,s.duration*18))+"px";c.innerHTML="<strong>"+escape(s.title||"Scene "+(i+1))+"</strong><small>"+fmt(s.duration)+"</small>";c.onclick=()=>selectScene(i);st.appendChild(c);
+  const q=document.createElement("div");q.className="clip";q.style.flexBasis=c.style.flexBasis;q.innerHTML="<strong>"+escape((s.caption||s.narration||"").slice(0,28))+"</strong><small>Caption</small>";ct.appendChild(q);
+ });
+ $("projectStatus").textContent=project.scenes.length?project.scenes.length+" scenes":"Draft";
+}
+function selectScene(i){
+ project.active=i;const s=project.scenes[i];if(!s)return;
+ $("sceneName").value=s.title||"";$("sceneNarration").value=s.narration||"";$("visualQuery").value=s.visualQuery||"";$("overlayText").value=s.overlayText||"";
+ $("caption").innerHTML=makeCaption(s.caption||s.narration||"");$("sceneTitle").textContent=s.title||"Scene "+(i+1);
+ $("hero").src=s.media||demoImages[i%demoImages.length];renderScenes();
+}
+function makeCaption(t){const cp=$("caption");if(cp)cp.className="caption cs-"+($("captionStyle")?.value||"impact");if(!$("boldWords").checked)return escape(t);let words=String(t).split(/\s+/);return words.map((w,i)=>i%5===0?"<b>"+escape(w)+"</b>":escape(w)).join(" ")}
+function parseScenes(text,duration){
+ const parts=text.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);
+ const chunks=parts.length?parts:text.match(/[^.!?]+[.!?]+/g)||[text];
+ const count=Math.min(80,Math.max(3,chunks.length));let arr=[];
+ for(let i=0;i<count;i++){const n=chunks[Math.floor(i*chunks.length/count)]||chunks[i%chunks.length]||"Scene narration";arr.push({title:"Scene "+(i+1),narration:n.trim(),caption:n.trim().slice(0,120),visualQuery:n.trim().split(/\s+/).slice(0,8).join(" "),duration:Math.max(3,duration/count),media:bgImages.length?bgImages[i%bgImages.length]:demoImages[i%demoImages.length]});}
+ return arr;
+}
+async function build(){
+ const topic=$("topic").value.trim(),script=$("script").value.trim(),duration=+$("length").value;
+ project.topic=topic;project.duration=duration;project.format=$("format").value;
+ if(!script&&!topic){setStatus("Enter a topic or script first.");return}
+ setStatus("Planning scenes…",15);
+ try{
+  let source=script;
+  if(!source){
+   const r=await fetch("/api/gemini",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({
+    system:"You are MuzjetAI's long-form video script planner. Return only a natural narration script, divided into short paragraphs. No markdown headings.",
+    user:"Write a documentary narration for: "+topic+". Target duration: "+duration+" seconds. Use factual, engaging narration.",
+    maxTokens:12000})});
+   if(!r.ok)throw Error("AI script request failed");
+   const j=await r.json();source=j.text||"";
+   $("script").value=source;
+  }
+  setStatus("Breaking script into scenes…",45);
+  project.scenes=parseScenes(source,duration);project.active=0;
+  renderScenes();selectScene(0);setStatus("Scenes ready. Search visuals for any scene.",100);
+ }catch(e){setStatus(e.message||"Could not build scenes. Check your Gemini API configuration.");}
+}
+async function searchMedia(){
+ const q=$("visualQuery").value.trim()||project.scenes[project.active]?.visualQuery;
+ if(!q)return;setStatus("Searching licensed visuals…");
+ const box=$("mediaResults");box.innerHTML="<div class='mini'>Searching…</div>";
+ try{
+  const src0=$("mediaSources")?$("mediaSources").value:"";const r=await fetch("/api/media?q="+encodeURIComponent(q)+(src0?"&sources="+encodeURIComponent(src0):""));const j=await r.json();
+  if(!r.ok) throw Error(j?.error?.message||"Media search failed");
+  const items=[...(j.images||[]),...(j.videos||[])].slice(0,12);box.innerHTML="";
+  const ps=j.providers||{};
+  if($('mediaProviderStatus')){
+   const used=(ps.successful||[]).join(" → ")||"No provider returned media";
+   const failed=(ps.failed||[]).map(x=>x.provider).join(", ");
+   $('mediaProviderStatus').textContent="Providers: "+used+(failed?" • fallback skipped: "+failed:"");
+  }
+  if(!items.length)box.innerHTML="<div class='mini'>No results from the available providers. Upload your own asset.</div>";
+  items.forEach(a=>{const el=document.createElement("div");el.className="asset";el.innerHTML="<img src='"+escape(a.thumbnail||a.url)+"' alt=''><div>"+escape(a.title||"Visual")+"</div><small style='opacity:.65'>"+escape(a.source||"")+"</small>";el.onclick=()=>{project.scenes[project.active].media=a.url;project.scenes[project.active].mediaType=a.type;project.scenes[project.active].mediaSource=a.source;project.scenes[project.active].mediaSourceUrl=a.sourceUrl;selectScene(project.active)};box.appendChild(el)});
+  setStatus("Visuals found with automatic provider fallback.");
+ }catch(e){box.innerHTML="<div class='mini'>Media search unavailable. Check your Netlify Functions and provider keys, or upload media.</div>";if($('mediaProviderStatus'))$('mediaProviderStatus').textContent="Provider search failed — local upload is still available.";setStatus(e.message||"Media search failed.");}
+}
+$("uploadScriptBtn").onclick=()=>$("scriptFile").click();
+$("scriptFile").onchange=e=>{
+ const f=e.target.files?.[0]; if(!f)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+   let text=String(reader.result||"");
+   // Strip common subtitle timing/markup when importing SRT/VTT.
+   if(/\.(srt|vtt)$/i.test(f.name)){
+     text=text.replace(/^WEBVTT[\s\S]*?\n\n/i,"")
+       .replace(/\r/g,"")
+       .split(/\n\s*\n/)
+       .map(block=>block.split("\n").filter(line=>!/^\d+$/.test(line.trim())&&!/^\d{2}:\d{2}:\d{2}[,.]\d{3}\s+-->/.test(line.trim())&&!/^NOTE\b/.test(line.trim())&&!/^STYLE\b/.test(line.trim())).join(" ").trim())
+       .filter(Boolean).join("\n\n");
+   }
+   $("script").value=text;
+   $("scriptFileName").textContent=f.name+" • "+text.length.toLocaleString()+" characters";
+   setStatus("Script loaded. Ready to build scenes.",0);
+ };
+ reader.onerror=()=>setStatus("Could not read that script file.");
+ reader.readAsText(f);
+};
+$("generate").onclick=build;$("searchMedia").onclick=searchMedia;
+$("sceneName").oninput=e=>{if(project.scenes[project.active])project.scenes[project.active].title=e.target.value;renderScenes()};
+$("sceneNarration").oninput=e=>{if(project.scenes[project.active]){project.scenes[project.active].narration=e.target.value;project.scenes[project.active].caption=e.target.value}selectScene(project.active)};
+$("visualQuery").oninput=e=>{if(project.scenes[project.active])project.scenes[project.active].visualQuery=e.target.value};
+$("boldWords").onchange=()=>selectScene(project.active);
+$("captions").onchange=()=>{if(project.scenes[project.active])selectScene(project.active)};
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));c.classList.add("active");project.style=c.textContent});
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");["sceneTab","mediaTab","textTab"].forEach(id=>$(id).classList.toggle("hidden",id!==t.dataset.tab))});
+$("voiceUploadBtn").onclick=()=>$("voiceFile").click();
+$("voiceFile").onchange=e=>{const f=e.target.files[0];if(!f)return;project.voice=URL.createObjectURL(f);$("audio").src=project.voice;$("audio").style.display="block";$("voiceLen").textContent=f.name;$("projectStatus").textContent="Voiceover uploaded"};
+$("ttsBtn").onclick=()=>{
+  const text=$("script").value.trim()||project.scenes.map(s=>s.narration||"").join("\n\n");
+  if(!text){alert("Add a script first, then open Text to Speech AI.");return}
+  localStorage.setItem("muzjetai_tts_pending_text",text);
+  location.href="/text-to-speech/?return=ai-video";
+};
+async function loadLatestTTS(){
+  try{
+    const db=await new Promise((resolve,reject)=>{
+      const r=indexedDB.open("muzjetai-tts",1);r.onupgradeneeded=()=>r.result.createObjectStore("audio");r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
+    });
+    const blob=await new Promise((resolve,reject)=>{const r=db.transaction("audio","readonly").objectStore("audio").get("latest");r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});
+    if(!blob)return alert("No generated Text to Speech AI audio found yet.");
+    project.voice=URL.createObjectURL(blob);$("audio").src=project.voice;$("audio").style.display="block";$("voiceLen").textContent="Text to Speech AI • latest";
+    $("projectStatus").textContent="AI voiceover loaded";
+  }catch(e){alert("Could not load the latest AI voiceover.");}
+}
+$("loadTtsBtn").onclick=loadLatestTTS;
+window.addEventListener("load",()=>{ if(location.hash==="#tts") loadLatestTTS(); });
+$("uploadImage").onclick=()=>$("mediaFile").click();
+$("mediaFile").onchange=e=>{const f=e.target.files[0];if(!f||!project.scenes[project.active])return;const u=URL.createObjectURL(f);project.scenes[project.active].media=u;project.scenes[project.active].mediaType=f.type.startsWith("video")?"video":"image";selectScene(project.active)};
+$("applyText").onclick=()=>{if(project.scenes[project.active]){project.scenes[project.active].overlayText=$("overlayText").value;selectScene(project.active)}};
+const musicLibrary={
+ documentary:[{name:"The March of Progress",url:"https://raw.githubusercontent.com/jacobbeasley/novelai-music-library/main/music/documentary/20260824_100854_the_march_of_progress.mp3",license:"Apache 2.0"}],
+ cinematic:[{name:"DURU — Rhythm Fever",url:"https://raw.githubusercontent.com/uncle-sheepsky/duru-ai-cc0-bgm/main/mp3/duru-rhythm-fever.mp3",license:"CC0"}],
+ horror:[{name:"DURU — Winter Arcade",url:"https://raw.githubusercontent.com/uncle-sheepsky/duru-ai-cc0-bgm/main/mp3/duru-winter-arcade.mp3",license:"CC0"}],
+ cozy:[{name:"DURU — Room Scene Lo-fi",url:"https://raw.githubusercontent.com/uncle-sheepsky/duru-ai-cc0-bgm/main/mp3/duru-roomscene-lofi.mp3",license:"CC0"}],
+ adventure:[{name:"DURU — Rondo",url:"https://raw.githubusercontent.com/uncle-sheepsky/duru-ai-cc0-bgm/main/mp3/duru-rondo.mp3",license:"CC0"}],
+ afrobeats:[{name:"DURU — Rhythm Fever",url:"https://raw.githubusercontent.com/uncle-sheepsky/duru-ai-cc0-bgm/main/mp3/duru-rhythm-fever.mp3",license:"CC0"}],
+ hiphop:[{name:"DURU — Arcade Vibe",url:"https://raw.githubusercontent.com/uncle-sheepsky/duru-ai-cc0-bgm/main/mp3/duru-arcade-vibe.mp3",license:"CC0"}],
+ lofi:[{name:"DURU — Room Scene Lo-fi",url:"https://raw.githubusercontent.com/uncle-sheepsky/duru-ai-cc0-bgm/main/mp3/duru-roomscene-lofi.mp3",license:"CC0"}],
+ scifi:[{name:"The Mathematical Universe",url:"https://github.com/jacobbeasley/novelai-music-library/blob/main/music/documentary/20260824_100854_the_march_of_progress.mp3?raw=1",license:"Apache 2.0"}]
+};
+function fillMusic(){const list=musicLibrary[$("musicType").value]||[];$('musicTrack').innerHTML=list.map((m,i)=>`<option value="${i}">${m.name} — ${m.license}</option>`).join("");project.music=list[0]||null;$('musicLen').textContent=project.music?project.music.name:"No track";}
+$("musicType").onchange=fillMusic;fillMusic();
+$("musicVol").oninput=e=>$("musicVolValue").textContent=e.target.value+"%";
+$("voiceVol").oninput=e=>$("voiceVolValue").textContent=e.target.value+"%";
+$("musicTrack").onchange=async()=>{const list=musicLibrary[$("musicType").value]||[];project.music=list[Number($("musicTrack").value)]||null;$("musicLen").textContent=project.music?.name||"No track";if(project.music?.synth){try{const mod=await import("/shared/audio-tools.js");const blob=await mod.generateMusicWav($("musicType").value,60);project.music={...project.music,blob,url:URL.createObjectURL(blob)};$("musicAudio").src=project.music.url;$("musicAudio").style.display="block";$("musicLen").textContent=project.music.name+" • ready";}catch(e){console.warn(e)}}};
+$("previewMusic").onclick=async()=>{if(!project.music)return alert("Choose a music track first.");const a=$("musicAudio");if(project.music.synth&&!project.music.blob){try{const mod=await import("/shared/audio-tools.js");const blob=await mod.generateMusicWav($("musicType").value,60);project.music={...project.music,blob,url:URL.createObjectURL(blob)};}catch(e){alert("Could not generate this music track.");return}}if(!project.music.url)return alert("Choose a music track first.");a.src=project.music.url;a.volume=Number($("musicVol").value)/100;a.style.display="block";a.play().catch(()=>alert("This track could not be played. Choose AI Original music instead."));};
+$("autoCaptionBtn").onclick=()=>{if(!project.scenes.length)return alert("Build your scenes first.");project.scenes.forEach((s,i)=>{s.caption=s.narration||s.caption||""});selectScene(project.active);$("captionStatus").innerHTML="<strong>Captions ready</strong><br>Scene captions have been generated from the narration and are now visible on the preview/timeline. The next render stage can burn them into the final video.";setStatus("Auto captions generated from narration.")};
+$("newBtn").onclick=()=>{project={title:"Untitled Video",topic:"",style:"Documentary",format:"16:9 YouTube",duration:300,scenes:[],active:0,voice:null,music:null};$("topic").value="";$("script").value="";$("sceneTrack").innerHTML="";$("captionTrack").innerHTML="";$("hero").removeAttribute("src");$("caption").textContent="Your video preview";$("status").textContent="New project."};
+$("saveBtn").onclick=()=>{localStorage.setItem("muzjetai_project",JSON.stringify(project));$("projectStatus").textContent="Saved locally • "+new Date().toLocaleTimeString()};
+$("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify(project,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="muzjetai-project.json";a.click();$("projectStatus").textContent="Project JSON exported — backup only"};
+
+/* ===== Send finished AI Video Studio project directly to Video Maker ===== */
+const VM_DB="muzjetai-media-transfer", VM_STORE="projects";
+function vmOpenDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(VM_DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(VM_STORE))r.result.createObjectStore(VM_STORE)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function vmPutProject(id,data){const db=await vmOpenDB();return new Promise((resolve,reject)=>{const tx=db.transaction(VM_STORE,"readwrite");tx.objectStore(VM_STORE).put(data,id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>{db.close();reject(tx.error)}})}
+async function vmFetchBlob(url){
+ if(!url)return null;
+ try{const r=await fetch(url);if(!r.ok)throw new Error("media");return await r.blob()}catch(e){return null}
+}
+async function sendToVideoMaker(){
+ if(!project.scenes.length){alert("Build your scenes first.");return}
+ const btn=$("videoMakerBtn");btn.disabled=true;btn.textContent="Preparing Video Maker…";
+ try{
+  const scenes=[];let skipped=0;
+  for(let i=0;i<project.scenes.length;i++){
+   const s=project.scenes[i];
+   let blob=s.mediaBlob||null;
+   if(!blob&&s.media)blob=await vmFetchBlob(s.media);
+   if(blob){scenes.push({blob,name:`scene-${String(i+1).padStart(2,"0")}.${blob.type.includes("png")?"png":blob.type.includes("webp")?"webp":"jpg"}`,duration:+s.duration||5,caption:s.caption||s.narration||""})}else skipped++;
+  }
+  if(!scenes.length)throw new Error("No scene media could be transferred. Add/replace your scene images first.");
+  let voice=null,music=[];
+  const vb=project.voiceBlob||await vmFetchBlob(project.voice);
+  if(vb)voice={blob:vb,name:"muzjetai-voice.wav"};
+  if(project.musicBlob)music=[{blob:project.musicBlob,name:"muzjetai-music.wav"}];
+  else if(project.music?.url){const mb=await vmFetchBlob(project.music.url);if(mb)music=[{blob:mb,name:(project.music.name||"background-music").replace(/[^a-z0-9._-]+/gi,"-")+".mp3"}]}
+  const id="p"+Date.now();
+  await vmPutProject(id,{version:1,title:project.title||project.topic||"MuzjetAI Video",format:project.format,duration:project.duration,scenes,voice,music,voiceVol:+$("voiceVol").value/100,musicVol:+$("musicVol").value/100,createdAt:Date.now()});
+  if(skipped)$("projectStatus").textContent=`Sent to Video Maker • ${scenes.length} scenes transferred • ${skipped} skipped`;
+  else $("projectStatus").textContent="✓ Project sent to Video Maker. Loading editor…";
+  location.href="/video-maker/?import="+encodeURIComponent(id);
+ }catch(e){alert(e.message||"Could not send the project to Video Maker.");btn.disabled=false;btn.textContent="🎬 Open in Video Maker"}
+}
+$("videoMakerBtn").onclick=sendToVideoMaker;
+$("playBtn").onclick=()=>{if(!project.scenes.length)return;playing=!playing;$("playBtn").textContent=playing?"❚❚":"▶";if(playing){let i=project.active;timer=setInterval(()=>{i=(i+1)%project.scenes.length;selectScene(i)},Math.max(1000,(project.scenes[i]?.duration||3)*1000))}else clearInterval(timer)};
+$("scrub").oninput=e=>{if(project.scenes.length){let i=Math.min(project.scenes.length-1,Math.floor((+e.target.value/100)*project.scenes.length));selectScene(i);$("time").textContent=fmt(i?project.scenes.slice(0,i).reduce((a,s)=>a+s.duration,0):0)+" / "+fmt(project.duration)}};
+
+/* ===== Background images (5-10) ===== */
+const MAX_BG=10,MIN_BG=5;let bgImages=[];
+const bgThemes=[["Midnight","#0f172a","#334155"],["Sunset","#f97316","#7c3aed"],["Ocean","#0ea5e9","#1e3a8a"],["Forest","#16a34a","#052e16"],["Neon","#ec4899","#22d3ee"],["Crimson","#dc2626","#1c1917"],["Gold","#f59e0b","#78350f"],["Slate","#64748b","#0f172a"],["Aurora","#10b981","#6366f1"],["Dusk","#a855f7","#0f172a"]];
+const svgBg=(a,b)=>"data:image/svg+xml;utf8,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='1280' height='720'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${a}'/><stop offset='1' stop-color='${b}'/></linearGradient></defs><rect width='1280' height='720' fill='url(#g)'/></svg>`);
+const bgOptions=bgThemes.map(t=>({name:t[0],url:svgBg(t[1],t[2])}));
+function renderBg(){
+ $("bgPick").innerHTML="";
+ bgOptions.forEach(o=>{const b=document.createElement("button");b.type="button";b.title=o.name;b.style.backgroundImage=`url("${o.url}")`;b.className=bgImages.includes(o.url)?"on":"";b.onclick=()=>toggleBg(o.url);$("bgPick").appendChild(b)});
+ const n=bgImages.length;$("bgCount").textContent=n+" selected"+(n<MIN_BG?" — choose at least "+MIN_BG:" ✓")+" (max "+MAX_BG+"). Scenes cycle through your picks.";
+}
+function toggleBg(u){const i=bgImages.indexOf(u);if(i>=0)bgImages.splice(i,1);else if(bgImages.length<MAX_BG)bgImages.push(u);else alert("Maximum "+MAX_BG+" backgrounds.");renderBg()}
+$("bgUpload").onclick=()=>$("bgFile").click();
+$("bgFile").onchange=e=>{[...e.target.files].forEach(f=>{if(bgImages.length>=MAX_BG)return;const u=URL.createObjectURL(f);bgOptions.push({name:f.name,url:u});bgImages.push(u)});renderBg();e.target.value=""};
+$("bgClear").onclick=()=>{bgImages=[];renderBg()};
+renderBg();
+const _gen=$("generate").onclick;
+$("generate").addEventListener("click",e=>{if(bgImages.length&&bgImages.length<MIN_BG){setStatus("Tip: you picked "+bgImages.length+" background(s); 5–10 gives more variety.")}},true);
+$("captionStyle").addEventListener("change",()=>{if(project.scenes[project.active])selectScene(project.active)});
+
+/* ===== Generated background music (original, no license needed) ===== */
+const synthPresets={
+ documentary:{root:196,scale:[0,3,7,10],bpm:70,wave:"sine",beat:0},
+ cinematic:{root:146.8,scale:[0,3,7,12],bpm:80,wave:"sawtooth",beat:1},
+ horror:{root:110,scale:[0,1,6,7],bpm:55,wave:"triangle",beat:0},
+ cozy:{root:261.6,scale:[0,4,7,11],bpm:68,wave:"sine",beat:0},
+ adventure:{root:220,scale:[0,4,7,9],bpm:112,wave:"triangle",beat:2},
+ afrobeats:{root:233,scale:[0,3,7,10],bpm:104,wave:"triangle",beat:3},
+ hiphop:{root:130.8,scale:[0,3,5,7],bpm:140,wave:"square",beat:3},
+ lofi:{root:220,scale:[0,3,7,10],bpm:76,wave:"sine",beat:2},
+ scifi:{root:174.6,scale:[0,2,7,9],bpm:96,wave:"sawtooth",beat:1}
+};
+let synthCtx=null,synthTimer=null,synthGain=null;
+function stopSynth(){clearInterval(synthTimer);synthTimer=null;if(synthCtx){try{synthCtx.close()}catch(e){}synthCtx=null}}
+function playSynth(type,vol){
+ stopSynth();const p=synthPresets[type]||synthPresets.documentary;
+ const AC=window.AudioContext||window.webkitAudioContext;synthCtx=new AC();synthGain=synthCtx.createGain();synthGain.gain.value=vol;synthGain.connect(synthCtx.destination);
+ const beatLen=60/p.bpm;let step=0;
+ const tone=(f,t,d,w,g)=>{const o=synthCtx.createOscillator(),a=synthCtx.createGain();o.type=w;o.frequency.value=f;a.gain.setValueAtTime(0,t);a.gain.linearRampToValueAtTime(g,t+.05);a.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(a);a.connect(synthGain);o.start(t);o.stop(t+d+.05)};
+ const perc=(t,hi)=>{const len=synthCtx.sampleRate*.05,buf=synthCtx.createBuffer(1,len,synthCtx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*(1-i/len);const s=synthCtx.createBufferSource(),a=synthCtx.createGain();s.buffer=buf;a.gain.value=hi?.12:.2;s.connect(a);a.connect(synthGain);s.start(t)};
+ const tick=()=>{if(!synthCtx)return;const t=synthCtx.currentTime+.05,bar=Math.floor(step/4),deg=[0,3,2,4][bar%4];
+  const f=p.root*Math.pow(2,p.scale[deg%p.scale.length]/12);
+  if(step%4===0){tone(f/2,t,beatLen*4,"sine",.35);p.scale.slice(0,3).forEach(s=>tone(p.root*2*Math.pow(2,(s+p.scale[deg%p.scale.length])/12),t,beatLen*4,p.wave,.06))}
+  if(p.beat&&step%2===0)perc(t,false);if(p.beat>1&&step%2===1)perc(t,true);
+  if(p.beat===3&&step%4===3)tone(f*2,t,beatLen,p.wave,.08);
+  step++};
+ tick();synthTimer=setInterval(tick,beatLen*1000);
+}
+// add generated option first in each category
+Object.keys(synthPresets).forEach(k=>{(musicLibrary[k]=musicLibrary[k]||[]).unshift({name:"Generated loop (original)",synth:k,license:"Original — free to use commercially"})});
+// de-duplicate / drop unverified duplicate links
+Object.keys(musicLibrary).forEach(k=>{const seen=new Set();musicLibrary[k]=musicLibrary[k].filter(m=>{if(m.url&&m.url.includes("/blob/"))return false;const key=m.url||m.name;if(seen.has(key))return false;seen.add(key);return true})});
+fillMusic();
+$("previewMusic").onclick=()=>{
+ if(!project.music)return alert("Choose a music track first.");
+ const vol=Number($("musicVol").value)/100,a=$("musicAudio");
+ if(project.music.synth){a.pause();a.style.display="none";if(synthTimer){stopSynth();$("previewMusic").textContent="▶ Preview Background Music";return}playSynth(project.music.synth,Math.max(vol,.15));$("previewMusic").textContent="■ Stop preview";return}
+ stopSynth();a.src=project.music.url;a.volume=vol;a.style.display="block";a.play().catch(()=>alert("This track could not be loaded. Choose the Generated loop instead."));
+};
+$("musicTrack").addEventListener("change",stopSynth);$("musicType").addEventListener("change",stopSynth);
+
+/* ===== Clip editor, effects, transitions, 25s scenes ===== */
+const SCENE_MAX=25,WPS=2.5,MAX_WORDS=62;
+const MOTIONS=["zoomin","zoomout","panleft","panright","zoominpan"],TRANS=["crossfade","slide","zoom","wipe","dip","blur","slideup"],FILTERS=["none","cinema","warm","cool","vivid","vignette"];
+const MOTION_L={zoomin:"🔍 Zoom in",zoomout:"🔎 Zoom out",panleft:"⬅ Pan",panright:"➡ Pan",zoominpan:"✨ Drift",none:"Still"},TRANS_L={crossfade:"Crossfade",dip:"Dip",slide:"Slide",slideup:"Slide up",zoom:"Zoom",wipe:"Wipe",blur:"Blur",none:"Cut"};
+const wc=t=>(String(t||"").trim().match(/\S+/g)||[]).length;
+const durFor=t=>Math.min(SCENE_MAX,Math.max(3,Math.round(wc(t)/WPS)));
+function defaults(i){return{motion:MOTIONS[i%MOTIONS.length],strength:1.2,filter:"none",transition:i?TRANS[(i-1)%TRANS.length]:"crossfade",tlen:0.8}}
+function cleanScript(t){return String(t||"").replace(/\[B-roll:[^\]]*\]/gi,"").replace(/\[VERIFY:[^\]]*\]/gi,"").replace(/^\s*(TITLE|LENGTH):.*$/gim,"").replace(/^\s*\[PART \d+[^\]]*\]\s*$/gim,"").replace(/\r/g,"")}
+function splitWords(text,max){
+ const sents=text.match(/[^.!?。！？]+[.!?。！？]+["')\]]*|[^.!?。！？]+$/g)||[text],out=[];let buf="";
+ for(const se of sents){const t=se.trim();if(!t)continue;
+  if(wc(t)>max){if(buf){out.push(buf);buf=""}const w=t.split(/\s+/);for(let k=0;k<w.length;k+=max)out.push(w.slice(k,k+max).join(" "));continue}
+  if(buf&&wc(buf+" "+t)>max){out.push(buf);buf=t}else buf=buf?buf+" "+t:t}
+ if(buf)out.push(buf);return out}
+function parseScenes(text){
+ const paras=cleanScript(text).split(/\n\s*\n/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
+ let chunks=[];paras.forEach(p=>splitWords(p,MAX_WORDS).forEach(c=>chunks.push(c)));
+ // merge tiny scenes into the previous one when they still fit
+ const merged=[];chunks.forEach(c=>{const l=merged[merged.length-1];if(l&&wc(c)<14&&wc(l+" "+c)<=MAX_WORDS)merged[merged.length-1]=l+" "+c;else merged.push(c)});
+ chunks=merged.length?merged:["Scene narration"];
+ return chunks.slice(0,300).map((n,i)=>Object.assign({title:"Scene "+(i+1),narration:n,caption:n.slice(0,140),visualQuery:n.split(/\s+/).slice(0,8).join(" "),duration:durFor(n),media:bgImages.length?bgImages[i%bgImages.length]:bgOptions[i%bgOptions.length].url,mediaType:"image"},defaults(i)));
+}
+function totalDur(){return project.scenes.reduce((a,s)=>a+(s.duration||0),0)}
+function ensureFx(){project.scenes.forEach((s,i)=>{const d=defaults(i);for(const k in d)if(s[k]==null)s[k]=d[k];if(!s.duration)s.duration=durFor(s.narration)})}
+function mediaThumb(s,i){const u=s.media||bgOptions[i%bgOptions.length].url;return s.mediaType==="video"?`<video src="${escape(u)}#t=0.1" muted preload="metadata"></video>`:`<img src="${escape(u)}" alt="">`}
+function renderScenes(){
+ ensureFx();const st=$("sceneTrack"),ct=$("captionTrack"),strip=$("clipStripSide"),tot=totalDur()||1;
+ st.innerHTML="";ct.innerHTML="";strip.innerHTML="";
+ if(!project.scenes.length){strip.innerHTML='<div class="cc empty" style="grid-column:1/-1;min-width:260px">No clips yet — paste a script (or type keywords) and press “Analyze &amp; Build Scenes”.</div>';$("clipInfo").textContent="";return}
+ project.scenes.forEach((s,i)=>{
+  const pct=Math.max(2,s.duration/tot*100);
+  const c=document.createElement("div");c.className="clip"+(i===project.active?" active":"");c.style.flex="0 0 "+pct+"%";c.style.minWidth="38px";c.innerHTML="<strong>"+(i+1)+"</strong><small>"+s.duration+"s</small>";c.onclick=()=>selectScene(i);st.appendChild(c);
+  const q=document.createElement("div");q.className="clip";q.style.flex="0 0 "+pct+"%";q.style.minWidth="38px";q.innerHTML="<strong>"+escape((s.caption||s.narration||"").slice(0,24))+"</strong><small>Caption</small>";ct.appendChild(q);
+  const d=document.createElement("div");d.className="cc"+(i===project.active?" active":"");d.dataset.i=i;
+  d.innerHTML=`<div class="cc-media">${mediaThumb(s,i)}<span class="cc-n">${i+1}</span><span class="cc-d ${s.duration>=SCENE_MAX?"long":""}">${s.duration}s</span><div class="cc-fx"><span>${MOTION_L[s.motion]||""}</span><span>${i?TRANS_L[s.transition]||"":"Start"}</span></div></div><p class="cc-text">${escape(s.narration||"")}</p><div class="cc-act"><button data-a="replace" title="Replace image or video">🖼 Replace</button><button data-a="left" title="Move left">◀</button><button data-a="right" title="Move right">▶</button><button data-a="dup" title="Duplicate">⧉</button><button data-a="del" title="Delete">🗑</button></div>`;
+  strip.appendChild(d)});
+ const t=totalDur();$("clipInfo").textContent="• "+project.scenes.length+" scenes • "+fmt(t);project.duration=t;
+}
+$("clipStripSide").addEventListener("click",e=>{
+ const card=e.target.closest(".cc");if(!card||card.classList.contains("empty"))return;const i=+card.dataset.i,b=e.target.closest("button"),sc=project.scenes;
+ if(!b){selectScene(i);return}const a=b.dataset.a;
+ if(a==="replace"){selectScene(i);$("replaceFile").click();return}
+ if(a==="left"&&i>0){[sc[i-1],sc[i]]=[sc[i],sc[i-1]];project.active=i-1}
+ if(a==="right"&&i<sc.length-1){[sc[i+1],sc[i]]=[sc[i],sc[i+1]];project.active=i+1}
+ if(a==="dup"){sc.splice(i+1,0,JSON.parse(JSON.stringify(sc[i])));project.active=i+1}
+ if(a==="del"){if(sc.length<2)return alert("Keep at least one scene.");sc.splice(i,1);project.active=Math.max(0,Math.min(i,sc.length-1))}
+ selectScene(project.active);
+});
+function fileToMedia(f){return new Promise(res=>{
+ if(f.type.startsWith("video")){res({url:URL.createObjectURL(f),type:"video"});return}
+ const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,1280/im.width),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res({url:c.toDataURL("image/jpeg",.8),type:"image"})};im.onerror=()=>res({url:URL.createObjectURL(f),type:"image"});im.src=r.result};r.readAsDataURL(f)})}
+async function setSceneMedia(f){const s=project.scenes[project.active];if(!s||!f)return;const m=await fileToMedia(f);s.media=m.url;s.mediaType=m.type;s.mediaSource="upload";selectScene(project.active)}
+$("replaceFile").onchange=async e=>{await setSceneMedia(e.target.files[0]);e.target.value=""};
+$("replaceBtn").onclick=()=>{if(project.scenes.length)$("replaceFile").click()};
+$("mediaFile").onchange=async e=>{await setSceneMedia(e.target.files[0]);e.target.value=""};
+
+let prevMedia=null;
+function applyScene(s,i,animate){
+ const hero=$("hero"),vid=$("heroVideo"),stage=$("stage"),prev=$("heroPrev"),pv=$("preview");
+ const u=s.media||bgOptions[i%bgOptions.length].url;
+ if(animate&&prevMedia){prev.src=prevMedia.type==="image"?prevMedia.url:"";prev.style.display=prevMedia.type==="image"?"block":"none"}else prev.style.display="none";
+ if(s.mediaType==="video"){hero.style.display="none";vid.classList.remove("hidden");if(vid.getAttribute("src")!==u)vid.src=u;vid.play().catch(()=>{})}else{vid.pause();vid.classList.add("hidden");hero.style.display="block";if(hero.getAttribute("src")!==u)hero.src=u}
+ const el=s.mediaType==="video"?vid:hero;
+ el.style.animation="none";stage.style.animation="none";stage.className="layer fx-"+(s.filter||"none");void el.offsetWidth;
+ if(s.motion&&s.motion!=="none"){el.style.setProperty("--z",s.strength||1.2);el.style.animation=`kb-${s.motion} ${Math.max(2,s.duration||6)}s ease-in-out forwards`}
+ if(animate&&s.transition&&s.transition!=="none"&&i>0)stage.style.animation=`tr-${s.transition} ${s.tlen||0.8}s ease-out both`;
+ prevMedia={url:u,type:s.mediaType||"image"};
+}
+function selectScene(i,animate){
+ ensureFx();project.active=i;const s=project.scenes[i];if(!s){renderScenes();return}
+ $("sceneName").value=s.title||"";$("sceneNarration").value=s.narration||"";$("visualQuery").value=s.visualQuery||"";$("overlayText").value=s.overlayText||"";
+ $("scMotion").value=s.motion;$("scStrength").value=String(s.strength);$("scFilter").value=s.filter;$("scTrans").value=s.transition;$("scTlen").value=s.tlen;$("scTlenVal").textContent=s.tlen+"s";$("scDur").value=s.duration;$("scDurVal").textContent=s.duration+"s";
+ const w=wc(s.narration);$("sceneWords").textContent=w+" words ≈ "+Math.round(w/WPS)+"s spoken"+(w>MAX_WORDS?" — over 25s, use ✂ Split":"");
+ $("caption").innerHTML=makeCaption(s.caption||s.narration||"");$("sceneTitle").textContent=(s.title||"Scene "+(i+1))+" • "+s.duration+"s";$("ovr").textContent=s.overlayText||"";
+ applyScene(s,i,!!animate);renderScenes();
+ const card=document.querySelector('.cc.active');if(card&&card.scrollIntoView)card.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+const upd=(k,fn)=>{const el=$(k);el.addEventListener("input",()=>{const s=project.scenes[project.active];if(!s)return;fn(s,el.value);selectScene(project.active)})};
+upd("scMotion",(s,v)=>s.motion=v);upd("scStrength",(s,v)=>s.strength=+v);upd("scFilter",(s,v)=>s.filter=v);upd("scTrans",(s,v)=>s.transition=v);upd("scTlen",(s,v)=>s.tlen=+v);upd("scDur",(s,v)=>s.duration=Math.min(SCENE_MAX,Math.max(3,+v)));
+$("scTrans").addEventListener("change",()=>selectScene(project.active,true));
+$("sceneNarration").oninput=e=>{const s=project.scenes[project.active];if(!s)return;s.narration=e.target.value;s.caption=e.target.value.slice(0,140);const w=wc(s.narration);$("sceneWords").textContent=w+" words ≈ "+Math.round(w/WPS)+"s spoken"+(w>MAX_WORDS?" — over 25s, use ✂ Split":"");$("caption").innerHTML=makeCaption(s.caption);renderScenes()};
+$("applyAllFx").onclick=()=>{const c=project.scenes[project.active];if(!c)return;project.scenes.forEach(s=>{s.motion=c.motion;s.strength=c.strength;s.filter=c.filter;s.transition=c.transition;s.tlen=c.tlen});selectScene(project.active,true)};
+$("randomFx").onclick=()=>{let lm=null,lt=null;const pick=(a,l)=>{let x;do{x=a[Math.floor(Math.random()*a.length)]}while(x===l&&a.length>1);return x};project.scenes.forEach((s,i)=>{s.motion=lm=pick(MOTIONS,lm);s.transition=i?(lt=pick(TRANS,lt)):"crossfade";s.strength=[1.1,1.2,1.35][Math.floor(Math.random()*3)];s.tlen=+(0.5+Math.random()*0.9).toFixed(1)});selectScene(project.active,true)};
+$("splitBtn").onclick=()=>{const s=project.scenes[project.active];if(!s)return;const parts=splitWords(s.narration,Math.max(8,Math.ceil(wc(s.narration)/2)));if(parts.length<2)return alert("This scene is too short to split.");
+ const a=parts.slice(0,Math.ceil(parts.length/2)).join(" "),b=parts.slice(Math.ceil(parts.length/2)).join(" "),n=JSON.parse(JSON.stringify(s));
+ s.narration=a;s.caption=a.slice(0,140);s.duration=durFor(a);n.narration=b;n.caption=b.slice(0,140);n.duration=durFor(b);n.transition="crossfade";project.scenes.splice(project.active+1,0,n);selectScene(project.active)};
+
+/* player: time-based, with transitions and voiceover sync */
+let raf=null,t0=0,pos0=0;
+function sceneAt(p){let a=0;for(let i=0;i<project.scenes.length;i++){a+=project.scenes[i].duration;if(p<a)return i}return project.scenes.length-1}
+function startOf(i){return project.scenes.slice(0,i).reduce((a,s)=>a+s.duration,0)}
+function stopPlay(){playing=false;cancelAnimationFrame(raf);clearInterval(timer);$("playBtn").textContent="▶";try{$("audio").pause()}catch(e){} try{$("musicAudio").pause()}catch(e){}}
+$("playBtn").onclick=()=>{
+ if(!project.scenes.length)return;if(playing){stopPlay();return}
+ playing=true;$("playBtn").textContent="❚❚";const tot=totalDur();pos0=startOf(project.active);t0=performance.now();
+ const a=$("audio");if(project.voice&&a){a.currentTime=pos0;a.volume=Math.min(1,Number($("voiceVol").value)/100);a.play().catch(()=>{})} const ma=$("musicAudio");if(project.music&&ma){ma.currentTime=0;ma.volume=Math.min(1,Number($("musicVol").value)/100);ma.play().catch(()=>{})}
+ let last=project.active;
+ const tick=()=>{if(!playing)return;const p=pos0+(performance.now()-t0)/1000;if(p>=tot){stopPlay();selectScene(0);return}
+  const i=sceneAt(p);if(i!==last){last=i;selectScene(i,true)}
+  $("scrub").value=p/tot*100;$("time").textContent=fmt(p)+" / "+fmt(tot);raf=requestAnimationFrame(tick)};tick();
+};
+$("scrub").oninput=e=>{if(!project.scenes.length)return;const tot=totalDur(),p=+e.target.value/100*tot,i=sceneAt(p);if(playing)stopPlay();selectScene(i);$("time").textContent=fmt(p)+" / "+fmt(tot)};
+
+/* ===== Unified audio preflight ===== */
+let buildVoiceFile=null, buildMusicBlob=null, buildMusicUrl=null;
+$("buildVoice").onchange=()=>{
+  const v=$("buildVoice").value;
+  $("buildVoiceName").disabled=v!=="ai";
+  $("buildVoiceUpload").disabled=v!=="upload";
+};
+$("buildVoiceUpload").onclick=()=>$("buildVoiceFile").click();
+$("buildVoiceFile").onchange=e=>{buildVoiceFile=e.target.files?.[0]||null;if(buildVoiceFile){$("buildVoice").value="upload";$("buildVoice").dispatchEvent(new Event("change"));$("audioPreflightStatus").textContent="Uploaded voice selected: "+buildVoiceFile.name;}e.target.value=""};
+async function prepareBuildAudio(){
+  const vm=$("buildVoice").value, mm=$("buildMusic").value, status=$("audioPreflightStatus");
+  if(vm==="upload" && !buildVoiceFile && !project.voice) throw new Error("Choose or upload a voiceover first.");
+  if(vm==="ai") {
+    status.textContent="Generating AI voice… first use may download the local Kokoro model.";
+    const mod=await import("/shared/audio-tools.js");
+    const text=$("script").value.trim()||project.scenes.map(s=>s.narration||"").join("\n\n");
+    const blob=await mod.generateVoiceWav(text,$("buildVoiceName").value,1,(i,n)=>{status.textContent="Generating AI voice… "+Math.round(i/Math.max(n,1)*100)+"%"});
+    project.voice=URL.createObjectURL(blob);project.voiceBlob=blob;$('audio').src=project.voice;$('audio').style.display='block';$('voiceLen').textContent='AI Voice • '+$("buildVoiceName").selectedOptions[0].textContent;
+  } else if(vm==="upload") {
+    if(buildVoiceFile){project.voice=URL.createObjectURL(buildVoiceFile);project.voiceBlob=buildVoiceFile;$('audio').src=project.voice;$('audio').style.display='block';$('voiceLen').textContent=buildVoiceFile.name;}
+  } else { project.voice=null; }
+  if(mm==="ai") {
+    status.textContent="Generating original background music…";
+    const mod=await import("/shared/audio-tools.js");
+    const blob=await mod.generateMusicWav($("buildMusicMood").value,60,p=>{status.textContent="Generating background music… "+Math.round(p*100)+"%"});
+    buildMusicBlob=blob;project.musicBlob=blob;project.music={name:"AI Original • "+$("buildMusicMood").selectedOptions[0].textContent,url:URL.createObjectURL(blob),blob,license:"Original generated by MuzjetAI"};
+    $("musicAudio").src=project.music.url;$("musicAudio").style.display='block';$("musicLen").textContent=project.music.name;
+  } else if(mm==="library") {
+    const list=musicLibrary[$("buildMusicMood").value]||[];const m=list.find(x=>x.url)||list[0];if(!m)throw new Error("No library track is available for that mood.");project.music=m;$("musicLen").textContent=m.name;
+  } else { project.music=null;project.musicBlob=null; }
+  status.textContent="✓ Audio ready. Voice and music will be used in the project preview.";$("audioPreflight").classList.add("ready");
+}
+
+/* build: keywords or script -> scenes (<=25s each) */
+async function build(){
+ const topic=$("topic").value.trim(),script=$("script").value.trim();project.topic=topic;project.format=$("format").value;
+ if(!script&&!topic){setStatus("Enter a topic / keywords or paste a script first.");return}
+ setStatus("Planning scenes…",10);
+ try{
+  let source=script;
+  if(!source){
+   const secs=+$("length").value;
+   const r=await fetch("/api/gemini",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({
+    system:"You are MuzjetAI's video script writer. Return only spoken narration. No markdown, no headings, no stage directions. Write in short paragraphs of 50 to 62 words each (about 25 seconds spoken), separated by a blank line. Never invent statistics or quotes.",
+    user:"Write an engaging "+($("style")?.value||project.style||"documentary")+" narration for this title or keywords: "+topic+". Target total length: about "+secs+" seconds ("+Math.round(secs*WPS)+" words).",
+    maxTokens:12000})});
+   if(!r.ok)throw Error("AI script request failed. Check GEMINI_API_KEY in Netlify, or paste your own script.");
+   const j=await r.json();source=j.text||"";$("script").value=source}
+  setStatus("Preparing voice and music…",35);
+  await prepareBuildAudio();
+  setStatus("Breaking script into scenes…",55);
+  project.scenes=parseScenes(source);project.active=0;project.duration=totalDur();
+  selectScene(0);setStatus(project.scenes.length+" scenes ready ("+fmt(totalDur())+"). Tap any clip to replace its image/video or change zoom and transitions.",100);if($("autoMedia")&&$("autoMedia").checked)setTimeout(autoFill,100);
+ }catch(e){setStatus(e.message||"Could not build scenes.")}
+}
+$("generate").onclick=build;
+$("saveBtn").onclick=()=>{try{localStorage.setItem("muzjetai_project",JSON.stringify(project));$("projectStatus").textContent="Saved locally • "+new Date().toLocaleTimeString()}catch(e){$("projectStatus").textContent="Too large to save in the browser — use Export Draft instead"}};
+{const pend=localStorage.getItem("muzjetai_pending_script");if(pend){$("script").value=pend;localStorage.removeItem("muzjetai_pending_script");setStatus("Script received from the AI script writer. Press “Analyze & Build Scenes”.",0)}}
+try{const sv=localStorage.getItem("muzjetai_project");if(sv){const p=JSON.parse(sv);if(p&&p.scenes&&p.scenes.length){project=p;$("topic").value=p.topic||"";if($("length").querySelector('option[value="'+p.duration+'"]'))$("length").value=p.duration}}}catch(e){}
+if(project.scenes&&project.scenes.length){selectScene(Math.min(project.active||0,project.scenes.length-1))}else renderScenes();
+
+/* ===== Auto stock media ===== */
+const STOP=new Set("a an the and or but if then than so as of at by for in on to from with without into onto over under about after before during between through is are was were be been being am do does did done have has had having it its this that these those he she they them his her their our your you we i me my mine not no nor can could will would shall should may might must just very more most much many some any each every all both other such only own same too also there here when where why how what which who whom whose out up down off again further once one two three first second new like said says say get got make made use used".split(" "));
+function keywordsFor(text,topic){
+ const tw=new Set(String(topic||"").toLowerCase().split(/\W+/)),words=String(text||"").replace(/[^A-Za-z0-9\u00C0-\u024F' -]/g," ").split(/\s+/).filter(Boolean),freq={};
+ words.forEach((w,i)=>{const lw=w.toLowerCase().replace(/^'+|'+$/g,"");if(lw.length<4||STOP.has(lw)||tw.has(lw))return;const cap=/^[A-Z]/.test(w)&&i>0?2:0;freq[lw]=(freq[lw]||0)+1+cap+Math.min(2,lw.length/8)});
+ const top=Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,3);
+ const t=String(topic||"").split(/[,;]/)[0].trim().split(/\s+/).slice(0,3).join(" ");
+ return [t,...top].filter(Boolean).join(" ").slice(0,80)||"landscape";
+}
+async function aiQueries(scenes,topic){
+ const out={};
+ try{
+  for(let b=0;b<scenes.length;b+=30){
+   const part=scenes.slice(b,b+30);
+   const list=part.map((s,k)=>(b+k+1)+". "+String(s.narration||"").slice(0,220)).join("\n");
+   const r=await fetch("/api/gemini",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({system:"You pick stock-photo search queries. Reply with ONLY a JSON array of strings, one per numbered line, in order. Each string is 2 to 4 plain English words describing a concrete, photographable subject (no abstract words, no names of living people, no quotes).",user:"Video topic: "+(topic||"general")+"\nScenes:\n"+list,maxTokens:1500})});
+   if(!r.ok)throw Error("ai");const j=await r.json();
+   const arr=JSON.parse(String(j.text||"").replace(/```json|```/g,"").trim());
+   if(!Array.isArray(arr))throw Error("fmt");arr.forEach((q,k)=>{if(typeof q==="string"&&q.trim())out[b+k]=q.trim().slice(0,80)})}
+ }catch(e){}
+ return out;
+}
+async function toDataUrl(u){
+ try{const r=await fetch(u,{mode:"cors"});if(!r.ok)throw 0;const bl=await r.blob();if(!bl.type.startsWith("image/"))throw 0;
+  const bm=await createImageBitmap(bl),sc=Math.min(1,1280/bm.width),c=document.createElement("canvas");c.width=Math.round(bm.width*sc);c.height=Math.round(bm.height*sc);c.getContext("2d").drawImage(bm,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.82)}
+ catch(e){return u}
+}
+async function pickMedia(q,kind,used){
+ const src=$("mediaSources").value;const r=await fetch("/api/media?q="+encodeURIComponent(q)+(kind==="image"?"&type=image":"")+(src?"&sources="+encodeURIComponent(src):""));if(!r.ok)return null;const j=await r.json();
+ const items=[...(j.images||[]),...(kind==="both"?(j.videos||[]).slice(0,2):[])];
+ return items.find(a=>a.url&&!used.has(a.url))||null;
+}
+let amRunning=false,amStop=false;
+async function autoFill(){
+ if(amRunning){amStop=true;return}
+ if(!project.scenes.length)return alert("Build your scenes first.");
+ amRunning=true;amStop=false;$("autoFillBtn").textContent="■ Stop";
+ const kind=$("mediaKind").value,topic=$("topic").value.trim()||project.topic||"",used=new Set(project.scenes.map(s=>s.media).filter(Boolean));
+ const todo=project.scenes.map((s,i)=>i).filter(i=>project.scenes[i].mediaSource!=="upload");
+ $("amStatus").textContent="Choosing search words for "+todo.length+" scenes…";$("amBar").style.width="3%";
+ const ai=await aiQueries(todo.map(i=>project.scenes[i]),topic);
+ let done=0,found=0,failed=0,cursor=0;
+ const worker=async()=>{
+  while(cursor<todo.length&&!amStop){
+   const k=cursor++,i=todo[k],s=project.scenes[i];
+   const q1=ai[k]||keywordsFor(s.narration,topic);s.visualQuery=q1;
+   try{
+    let it=await pickMedia(q1,kind,used);
+    if(!it){const q2=keywordsFor(s.narration,topic);if(q2!==q1)it=await pickMedia(q2,kind,used)}
+    if(!it){const q3=(topic.split(/[,;]/)[0]||"nature").trim();it=await pickMedia(q3,kind,used)}
+    if(it){
+     const isVid=it.type==="video";const url=isVid?it.url:await toDataUrl(it.url);
+     s.media=url;s.mediaType=isVid?"video":"image";s.mediaSource=it.source||"stock";s.autoMedia=true;used.add(it.url);
+     s.credit={title:it.title||"",author:it.author||"",license:it.license||"",source:it.source||"",sourceUrl:it.sourceUrl||it.url,originalUrl:it.url};found++;
+    }else failed++;
+   }catch(e){failed++}
+   done++;$("amBar").style.width=Math.round(done/todo.length*100)+"%";$("amStatus").textContent="Found media for "+found+" of "+todo.length+" scenes"+(failed?" • "+failed+" without a match":"")+"…";
+   if(project.scenes[project.active]===s)selectScene(project.active);else renderScenes();
+  }
+ };
+ await Promise.all([worker(),worker(),worker()]);
+ amRunning=false;$("autoFillBtn").textContent="🔎 Auto-fill media now";
+ $("amStatus").textContent=(amStop?"Stopped. ":"Done. ")+"Media found for "+found+" of "+todo.length+" scenes"+(failed?" ("+failed+" had no match — tap 🖼 Replace on those clips, or add API keys for more results)":"")+". Credits are saved with each clip.";
+ selectScene(project.active);
+}
+$("autoFillBtn").onclick=autoFill;
+$("copyCredits").onclick=async()=>{
+ const t=project.scenes.map((s,i)=>s.credit?("Scene "+(i+1)+": "+(s.credit.title||"Untitled")+(s.credit.author?" by "+s.credit.author:"")+" — "+(s.credit.source||"")+(s.credit.license?" ("+s.credit.license+")":"")+" — "+s.credit.sourceUrl):null).filter(Boolean).join("\n");
+ if(!t)return alert("No stock media credits yet.");try{await navigator.clipboard.writeText(t);$("amStatus").textContent="Credits copied. Paste them in your video description."}catch(e){prompt("Copy credits:",t)}
+};
+// show credit on the clip card tooltip
+const _rs=renderScenes;renderScenes=function(){_rs();document.querySelectorAll(".cc").forEach(c=>{const s=project.scenes[+c.dataset.i];if(s&&s.credit){const m=c.querySelector(".cc-media");if(m)m.title="© "+(s.credit.author||s.credit.source||"")+" • "+(s.credit.license||"")}});queueSave()};
+
+/* ===== Persistent work (browser storage, survives reloads until the user clears site data) ===== */
+function idb(){return new Promise((res,rej)=>{const r=indexedDB.open("muzjetai-studio",1);r.onupgradeneeded=()=>r.result.createObjectStore("kv");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbGet(k){try{const d=await idb();return await new Promise((res,rej)=>{const r=d.transaction("kv").objectStore("kv").get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}catch(e){return undefined}}
+async function idbSet(k,v){try{const d=await idb();await new Promise((res,rej)=>{const r=d.transaction("kv","readwrite").objectStore("kv").put(v,k);r.onsuccess=res;r.onerror=()=>rej(r.error)});return true}catch(e){return false}}
+async function idbDel(k){try{const d=await idb();await new Promise(res=>{const t=d.transaction("kv","readwrite");t.objectStore("kv").delete(k);t.oncomplete=res;t.onerror=res})}catch(e){}}
+const UI_IDS=["mediaSources","topic","script","length","format","captionStyle","musicType","musicVol","voiceVol","autoMedia","mediaKind","captions"];
+function snapshot(){
+ const p=JSON.parse(JSON.stringify(Object.assign({},project,{voice:null,voiceBlob:null,musicBlob:null,scenes:project.scenes.map(s=>Object.assign({},s,{media:(s.blobId?"":s.media)}))})));
+ const ui={};UI_IDS.forEach(id=>{const e=$(id);if(e)ui[id]=e.type==="checkbox"?e.checked:e.value});
+ return{v:1,project:p,ui,bg:bgImages.filter(u=>!u.startsWith("blob:")),musicIdx:$("musicTrack").value,savedAt:Date.now()};
+}
+let saveT=null,saving=false;
+function queueSave(){clearTimeout(saveT);saveT=setTimeout(doSave,1200)}
+async function doSave(){if(saving)return;saving=true;const ok=await idbSet("project",snapshot());saving=false;if($("saveBadge"))$("saveBadge").textContent=ok?"💾 Auto-saved "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"⚠ Could not auto-save (private mode?)"}
+UI_IDS.forEach(id=>{const e=$(id);if(e){e.addEventListener("input",queueSave);e.addEventListener("change",queueSave)}});
+window.addEventListener("visibilitychange",()=>{if(document.hidden)doSave()});window.addEventListener("pagehide",doSave);
+async function restore(){
+ const d=await idbGet("project");if(!d||!d.project)return false;
+ if(d.ui)UI_IDS.forEach(id=>{const e=$(id);if(e&&d.ui[id]!=null){if(e.type==="checkbox")e.checked=!!d.ui[id];else e.value=d.ui[id]}});
+ project=Object.assign(project,d.project);project.voice=null;
+ if(d.bg&&d.bg.length){bgImages=d.bg.filter(u=>bgOptions.some(o=>o.url===u));renderBg()}
+ for(const s of project.scenes){if(s.blobId){const bl=await idbGet("blob:"+s.blobId);if(bl)s.media=URL.createObjectURL(bl);else{s.media="";s.blobId=null;s.mediaSource=""}}}
+ if(d.ui&&d.ui.musicType){fillMusic()}
+ if(project.scenes.length){selectScene(Math.min(project.active||0,project.scenes.length-1));$("amStatus").textContent="Restored your last session from this browser."}
+ $("status").textContent="Welcome back — your last project was restored from this browser.";return true;
+}
+// keep uploaded videos across reloads
+const _ssm=setSceneMedia;setSceneMedia=async function(f){const s0=project.scenes[project.active];await _ssm(f);const s=project.scenes[project.active];if(s&&f&&f.type.startsWith("video")){const id="v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);await idbSet("blob:"+id,f);s.blobId=id}else if(s)s.blobId=null;queueSave()};
+$("newBtn").onclick=async()=>{
+ if(project.scenes.length||$("script").value.trim()){if(!confirm("Start a new project? This clears the work saved in this browser."))return}
+ stopPlay();await idbDel("project");project={title:"Untitled Video",topic:"",style:"Documentary",format:"16:9 YouTube",duration:300,scenes:[],active:0,voice:null,music:null};
+ $("topic").value="";$("script").value="";bgImages=[];renderBg();fillMusic();$("hero").removeAttribute("src");$("caption").textContent="Your video preview";$("ovr").textContent="";$("status").textContent="New project.";renderScenes();$("saveBadge").textContent="💾 Auto-saved in this browser";
+};
+/* ===== Use a link (own / permitted media only) ===== */
+const SOCIAL=/(^|\.)(youtube\.com|youtu\.be|tiktok\.com|instagram\.com|facebook\.com|fb\.watch|x\.com|twitter\.com|vimeo\.com|reddit\.com|snapchat\.com|pinterest\.com|linkedin\.com|threads\.net)$/i;
+const probeType=u=>new Promise(res=>{let done=false;const fin=v=>{if(!done){done=true;res(v)}};setTimeout(()=>fin(null),7000);
+ const im=new Image();im.onload=()=>fin("image");im.onerror=()=>{const v=document.createElement("video");v.preload="metadata";v.muted=true;v.onloadedmetadata=()=>fin("video");v.onerror=()=>fin(null);v.src=u};im.src=u});
+$("useLinkBtn").onclick=async()=>{
+ const s=project.scenes[project.active];if(!s)return alert("Build your scenes first, then pick a clip.");
+ if(!$("linkRights").checked)return alert("Please confirm you own this media or have permission to use it.");
+ let url;try{url=new URL($("mediaLink").value.trim())}catch(e){return alert("Paste a full link that starts with https://")}
+ if(url.protocol!=="https:")return alert("Use an https:// link.");
+ const ext=/\.(jpe?g|png|webp|gif|avif|mp4|webm|mov)$/i.exec(url.pathname);
+ if(SOCIAL.test(url.hostname)&&!ext)return alert("That is a page on a social or video site, not a media file. Download the file yourself (only if you have permission) and upload it with 🖼 Replace.");
+ $("status").textContent="Checking the link…";
+ const type=ext?(/mp4|webm|mov/i.test(ext[1])?"video":"image"):await probeType(url.href);
+ if(!type)return alert("That link isn't a direct image or video file (web pages from news sites can't be used). Download the file yourself if you may, then upload it with 🖼 Replace.");
+ s.media=type==="image"?await toDataUrl(url.href):url.href;s.mediaType=type;s.mediaSource="upload";s.blobId=null;
+ s.credit={title:"Linked media (rights confirmed by user)",author:"",license:"User-confirmed permission",source:url.hostname,sourceUrl:url.href};
+ $("mediaLink").value="";$("status").textContent="Link added to scene "+(project.active+1)+".";selectScene(project.active);
+};
+
+restore();
+</script>
+<script src="/shared/ai-writer.js"></script><script>
+(function(){
+  function addWriter(){
+    const ta=document.getElementById('script'); if(!ta || document.getElementById('muzjet-context-writer')) return;
+    const wrap=document.createElement('div'); wrap.id='muzjet-context-writer'; wrap.style.cssText='margin:8px 0;display:flex;gap:8px;flex-wrap:wrap';
+    const b=document.createElement('button'); b.type='button'; b.textContent='✍️ AI Write Script'; b.className='btn';
+    b.onclick=()=>window.MuzjetAIWriter.open({type:'YouTube Script',topic:`Write a ${document.querySelector('#length')?.value || 'medium'} ${document.querySelector('#format')?.value || 'YouTube'} script about: ${document.querySelector('#topic')?.value || ''}. Style: ${document.querySelector('#style')?.value || 'Documentary'}.`,onUse:(text)=>{ta.value=text;ta.dispatchEvent(new Event('input',{bubbles:true}));ta.dispatchEvent(new Event('change',{bubbles:true}));}});
+    wrap.appendChild(b); ta.parentNode.insertBefore(wrap,ta);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',addWriter); else addWriter();
+})();
+</script><script>
+(function(){
+ function addShortcut(){
+  if(document.getElementById('muzjet-global-writer')) return;
+  const b=document.createElement('a'); b.id='muzjet-global-writer'; b.href='/ai-writer/'; b.textContent='✍️ AI Writer';
+  b.style.cssText='position:fixed;right:16px;bottom:16px;z-index:9990;background:#3568e8;color:#fff;text-decoration:none;padding:11px 14px;border-radius:999px;font:700 14px system-ui;box-shadow:0 8px 25px rgba(0,0,0,.18)';
+  document.body.appendChild(b);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addShortcut);else addShortcut();
+})();
+</script></body>
+</html>

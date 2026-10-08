@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MuzjetAI — AI Writer</title>
+<style>
+:root{--bg:#f4f6fa;--ink:#182033;--muted:#718096;--line:#e4e8ef;--card:#fff;--blue:#3568e8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+.shell{max-width:1080px;margin:auto;padding:28px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+.brand{font-size:21px;font-weight:800}.brand span{display:inline-grid;place-items:center;background:var(--blue);color:#fff;border-radius:8px;width:28px;height:28px;margin-right:7px}
+.back{color:var(--blue);text-decoration:none;font-weight:700}.hero h1{font-size:38px;margin:0 0 7px}.hero p{color:var(--muted);max-width:700px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:20px;box-shadow:0 4px 18px rgba(20,35,60,.04)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.grid label{font-weight:700;font-size:13px;display:flex;flex-direction:column;gap:6px}
+select,textarea{font:inherit;border:1px solid #d8dfeb;border-radius:10px;padding:11px;background:#fff}textarea{resize:vertical}.topic{margin-top:14px}.topic textarea{width:100%;min-height:160px}
+.actions{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap}.actions button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}.primary{background:var(--blue);color:#fff}.secondary{background:#edf2ff;color:#244fe3}
+.status{min-height:22px;color:var(--muted);margin:12px 0 5px}.error{color:#c53030}.output{width:100%;min-height:390px}
+.hint{font-size:13px;color:var(--muted);margin-top:8px}@media(max-width:650px){.grid{grid-template-columns:1fr}.hero h1{font-size:31px}}
+</style></head>
+<body><main class="shell">
+<div class="top"><div class="brand"><span>✦</span>MuzjetAI</div><a class="back" href="/">← Back to MuzjetAI</a></div>
+<section class="hero"><h1>AI Writer</h1><p>Write scripts, articles, descriptions, posts and other content using the same secure AI engine used across MuzjetAI.</p></section>
+<section class="card">
+<div class="grid">
+<label>Content type<select id="type"><option>YouTube Script</option><option>Blog Article</option><option>News Article</option><option>SEO Article</option><option>Video Description</option><option>Social Media Post</option><option>Product Description</option><option>Rewrite / Improve</option><option>Summarize</option></select></label>
+<label>Tone<select id="tone"><option>Professional and engaging</option><option>Friendly and casual</option><option>Dramatic and urgent</option><option>Simple and clear</option><option>Inspirational</option><option>News / factual</option></select></label>
+<label>Length<select id="length"><option>Short</option><option selected>Medium</option><option>Long</option><option>Very long</option></select></label>
+<label>Language<select id="language"><option>English</option><option>Spanish</option><option>French</option><option>Hindi</option><option>Portuguese</option><option>Chinese</option></select></label>
+</div>
+<label class="topic">Topic / instructions<textarea id="topic" placeholder="Example: Write a 10-minute documentary script about NASA discovering a mysterious object in deep space."></textarea></label>
+<div class="actions"><button class="primary" id="generate">✨ Generate</button><button class="secondary" id="copy" disabled>Copy</button><button class="secondary" id="download" disabled>Download .txt</button></div>
+<div class="status" id="status"></div><textarea class="output" id="output" placeholder="Generated content appears here..."></textarea>
+<div class="hint">Your API key stays on the Netlify server. The browser only calls <b>/api/gemini</b>.</div>
+</section></main>
+<script src="/shared/ai-writer.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+$('generate').onclick=async()=>{const b=$('generate');b.disabled=true;$('status').className='status';$('status').textContent='Writing…';$('copy').disabled=true;$('download').disabled=true;
+try{$('output').value=await MuzjetAIWriter.generate({type:$('type').value,tone:$('tone').value,length:$('length').value,language:$('language').value,topic:$('topic').value,maxTokens:12000});$('status').textContent='Ready.';$('copy').disabled=false;$('download').disabled=false}
+catch(e){$('status').className='status error';$('status').textContent=e.message||'Generation failed.'}finally{b.disabled=false}};
+$('copy').onclick=async()=>{await navigator.clipboard.writeText($('output').value);$('status').textContent='Copied.'};
+$('download').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('output').value],{type:'text/plain'}));a.download='muzjetai-writing.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+</script></body></html>

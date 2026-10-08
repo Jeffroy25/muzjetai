@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MuzjetAI — Text to Speech AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Anton&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fa;--ink:#182033;--muted:#7a8497;--line:#e5e9f1;--card:#fff;--blue:#3568e8;--blue2:#edf2ff;--green:#18a56b;--dark:#111827}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:500 15px/1.5 Barlow,system-ui,sans-serif}button,input,textarea,select{font:inherit}
+.shell{min-height:100vh;display:flex}.side{position:fixed;width:238px;inset:0 auto 0 0;background:#fff;border-right:1px solid var(--line);padding:22px 14px;z-index:10;display:flex;flex-direction:column}.brand{font-weight:800;font-size:20px;padding:0 10px 28px}.brand i{display:inline-grid;place-items:center;background:var(--blue);color:#fff;width:24px;height:24px;border-radius:7px;font-style:normal;margin-right:7px}.label{font-size:10px;color:#98a1b1;letter-spacing:.12em;padding:0 10px 8px}.nav{display:grid;gap:3px}.nav a{padding:11px;border-radius:8px;text-decoration:none;color:#697386;font-weight:600}.nav a.active,.nav a:hover{background:var(--blue2);color:#315fd8}.spacer{flex:1}.side small{color:#9aa3b4;padding:10px}.main{margin-left:238px;flex:1;min-width:0}.top{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:8}.top strong{font-size:18px}.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer;text-decoration:none;color:inherit}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:28px 22px 70px}.hero{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:20px}.hero h1{font:400 clamp(34px,6vw,58px)/1 Anton,Impact,sans-serif;margin:0 0 8px}.hero p{margin:0;color:var(--muted);max-width:720px}.badge{background:#eaf8f1;color:#18764e;border-radius:999px;padding:7px 10px;font-weight:800;font-size:12px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px #1820330a;overflow:hidden}.card h2{font-size:15px;margin:0;padding:15px 18px;border-bottom:1px solid var(--line)}.body{padding:18px}.field{display:grid;gap:7px;margin-bottom:14px}.field span{font-size:12px;font-weight:800;color:#657086}.textarea{width:100%;min-height:390px;resize:vertical;border:1px solid #dce1ea;border-radius:10px;padding:14px;outline:none;line-height:1.55}.textarea:focus,select:focus,input:focus{border-color:#7e9bf2;box-shadow:0 0 0 3px #edf2ff}.select,.input{width:100%;border:1px solid #dce1ea;border-radius:8px;padding:10px;background:#fff}.row{display:flex;gap:10px}.row>*{flex:1}.counter{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:6px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.range{width:100%}.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.voice{border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff;text-align:left;cursor:pointer}.voice.active{border-color:#9db3ff;background:var(--blue2);color:#315fd8}.voice strong{display:block;font-size:12px}.voice small{color:var(--muted)}.progress{height:8px;background:#edf0f5;border-radius:99px;overflow:hidden;margin:15px 0 8px}.progress i{display:block;height:100%;width:0;background:var(--blue);transition:.2s}.status{font-size:12px;color:var(--muted)}audio{width:100%;margin-top:12px}.info{background:#f7f9fd;border:1px solid #e3e8f1;border-radius:10px;padding:12px;color:#697386;font-size:12px}.links{margin-top:10px;font-size:11px;color:#8791a3}.hidden{display:none!important}
+@media(max-width:900px){.side{display:none}.main{margin-left:0}.grid{grid-template-columns:1fr}.top{padding:0 12px}.wrap{padding:20px 12px 50px}.hero{display:block}.badge{display:inline-block;margin-top:12px}}
+</style></head>
+<body>
+<div class="shell">
+<aside class="side"><div class="brand"><i>M</i>MuzjetAI</div><div class="label">CREATE</div><nav class="nav">
+<a href="/">Thumbnails</a><a href="/analyzer/">Style Analyzer</a><a href="/scripts/">Scripts</a><a href="/ai-video/">AI Video Studio</a><a class="active" href="/text-to-speech/">Text to Speech AI</a><a href="/video-maker/">Video Maker</a>
+</nav><div class="spacer"></div><small>Free local AI voice generation</small></aside>
+<main class="main">
+<header class="top"><div><strong>Text to Speech AI</strong><div style="font-size:12px;color:var(--muted)">Free browser-based voiceover • no paid TTS API</div></div><div class="actions"><a class="btn" id="back" href="/ai-video/">← AI Video Studio</a></div></header>
+<div class="wrap">
+<section class="hero"><div><h1>Text to Speech AI</h1><p>Turn scripts into natural voiceovers directly in your browser. Built around the open Kokoro model, with smart chunking for long narration and an Adam male voice option.</p></div><span class="badge">FREE • LOCAL AI</span></section>
+<div class="grid">
+<section class="card"><h2>1. Your narration</h2><div class="body">
+<label class="field"><span>Script — up to 100,000 characters</span>
+<textarea id="text" class="textarea" maxlength="100000" placeholder="Paste your narration here..."></textarea>
+<div class="row" style="margin-top:8px">
+<button class="btn" id="uploadTextBtn" type="button">📄 Upload Script</button>
+<input id="scriptUpload" type="file" accept=".txt,.md,.srt,.vtt,.csv,text/plain,text/markdown,text/vtt" hidden>
+<span class="mini" id="uploadName">TXT, MD, SRT or VTT</span>
+</div>
+<div class="counter"><span id="count">0 / 100,000</span><span id="estimate">Estimated: —</span></div></label>
+<div class="controls"><label class="field"><span>Country / Region</span><select id="country" class="select">
+<option value="US">🇺🇸 United States</option><option value="GB">🇬🇧 United Kingdom</option><option value="ES">🇪🇸 Spain</option><option value="FR">🇫🇷 France</option><option value="IN">🇮🇳 India</option><option value="IT">🇮🇹 Italy</option><option value="JP">🇯🇵 Japan</option><option value="BR">🇧🇷 Brazil</option><option value="CN">🇨🇳 China</option>
+</select></label><label class="field"><span>Language</span><select id="language" class="select">
+<option value="en-US">English (US)</option><option value="en-GB">English (UK)</option><option value="es">Spanish</option><option value="fr">French</option><option value="hi">Hindi</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="pt-BR">Portuguese (Brazil)</option><option value="zh">Chinese</option>
+</select></label><label class="field"><span>Voice</span><select id="voice" class="select"><option value="am_adam">Adam — American Male ⭐ Narrator</option><option value="am_michael">Michael — American Male ⭐ Narrator</option><option value="am_onyx">Onyx — American Male (deep)</option><option value="am_fenrir">Fenrir — American Male (strong)</option><option value="am_eric">Eric — American Male</option><option value="am_liam">Liam — American Male</option><option value="am_echo">Echo — American Male</option><option value="am_puck">Puck — American Male</option><option value="bm_george">George — British Male ⭐ Narrator</option><option value="bm_daniel">Daniel — British Male</option><option value="bm_fable">Fable — British Male (storyteller)</option><option value="bm_lewis">Lewis — British Male</option><option value="af_heart">Heart — American Female ⭐ Narrator</option><option value="af_bella">Bella — American Female</option><option value="af_nicole">Nicole — American Female (calm)</option><option value="af_nova">Nova — American Female</option><option value="af_sarah">Sarah — American Female</option><option value="bf_emma">Emma — British Female ⭐ Narrator</option><option value="bf_lily">Lily — British Female</option><option value="ef_dora">Dora — Spanish Female</option><option value="em_alex">Alex — Spanish Male</option><option value="ff_siwis">Siwis — French Female</option><option value="hf_alpha">Alpha — Hindi Female</option><option value="hm_omega">Omega — Hindi Male</option><option value="if_sara">Sara — Italian Female</option><option value="im_nicola">Nicola — Italian Male</option><option value="jf_alpha">Alpha — Japanese Female</option><option value="jm_kumo">Kumo — Japanese Male</option><option value="pf_dora">Dora — Portuguese (BR) Female</option><option value="pm_alex">Alex — Portuguese (BR) Male</option><option value="zf_xiaobei">Xiaobei — Chinese Female</option><option value="zm_yunjian">Yunjian — Chinese Male</option></select></label><label class="field"><span>Speaking speed <b id="speedValue">1.0×</b></span><input id="speed" class="range" type="range" min=".7" max="1.3" step=".05" value="1"></label></div>
+<div class="row"><button class="btn primary" id="generate">🎙 Generate Voiceover</button><button class="btn" id="stop" disabled>Stop</button><button class="btn" id="instant" type="button" title="Plays instantly with your device voice. Not saved.">⚡ Instant preview</button></div>
+<div class="progress"><i id="bar"></i></div><div class="status" id="status">First use downloads the open model once and caches it in your browser.</div>
+<audio id="player" controls class="hidden"></audio>
+<div class="row" style="margin-top:12px"><button class="btn" id="download" disabled>Download WAV</button><button class="btn" id="useVideo" disabled>Use in AI Video Studio</button></div>
+</div></section>
+<aside class="card"><h2>2. Voice & engine</h2><div class="body">
+<div class="voice-grid">
+<button class="voice active" data-v="am_adam"><strong>Adam</strong><small>American • Male</small></button>
+<button class="voice" data-v="am_michael"><strong>Michael</strong><small>American • Male</small></button>
+<button class="voice" data-v="af_heart"><strong>Heart</strong><small>American • Female</small></button>
+<button class="voice" data-v="bf_emma"><strong>Emma</strong><small>British • Female</small></button>
+<button class="voice" data-v="bm_george"><strong>George</strong><small>British • Male</small></button>
+<button class="voice" data-v="af_bella"><strong>Bella</strong><small>American • Female</small></button>
+</div>
+<div class="info" style="margin-top:14px"><strong>How it stays free</strong><br>Speech is generated on the user's device with Kokoro. Your script is not sent to a paid TTS API. WebGPU is used when available, with WASM fallback.</div>
+<div class="info" style="margin-top:10px"><strong>Long scripts</strong><br>The app breaks long text into sentence-sized chunks and combines the audio into one WAV file, so 10-minute narration and larger scripts are supported.</div>
+<div class="links">Model/library: Kokoro-82M • Apache-2.0. Browser performance depends on the user's device.</div>
+</div></aside>
+</div></div></main></div>
+<script type="module">
+import { KokoroTTS } from "https://esm.sh/kokoro-js@1.2.1";
+const $=id=>document.getElementById(id);
+let tts=null, currentBlob=null, stopped=false, engineName="";
+const pending=localStorage.getItem("muzjetai_tts_pending_text");
+if(pending){$("text").value=pending;localStorage.removeItem("muzjetai_tts_pending_text");}
+function updateCount(){const n=$("text").value.length;$("count").textContent=n.toLocaleString()+" / 100,000";$("estimate").textContent=n?`Estimated: ~${Math.max(1,Math.round(n/850))} min`:"Estimated: —";}
+$("uploadTextBtn").onclick=()=>$("scriptUpload").click();
+$("scriptUpload").onchange=e=>{
+ const f=e.target.files?.[0]; if(!f)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+   let text=String(reader.result||"");
+   if(/\.(srt|vtt)$/i.test(f.name)){
+     text=text.replace(/^WEBVTT[\s\S]*?\n\n/i,"").replace(/\r/g,"")
+       .split(/\n\s*\n/)
+       .map(block=>block.split("\n").filter(line=>!/^\d+$/.test(line.trim())&&!/^\d{2}:\d{2}:\d{2}[,.]\d{3}\s+-->/.test(line.trim())&&!/^NOTE\b/.test(line.trim())&&!/^STYLE\b/.test(line.trim())).join(" ").trim())
+       .filter(Boolean).join("\n\n");
+   }
+   if(text.length>100000){alert("This script is over the 100,000 character limit.");return;}
+   $("text").value=text; $("uploadName").textContent=f.name+" • "+text.length.toLocaleString()+" characters"; updateCount();
+ };
+ reader.onerror=()=>alert("Could not read that script file.");
+ reader.readAsText(f);
+};
+$("text").addEventListener("input",updateCount);updateCount();
+$("speed").oninput=e=>$("speedValue").textContent=Number(e.target.value).toFixed(2)+"×";
+const voiceMeta={am_adam:["US","en-US"],am_eric:["US","en-US"],bm_lewis:["GB","en-GB"],am_michael:["US","en-US"],am_fenrir:["US","en-US"],am_puck:["US","en-US"],am_echo:["US","en-US"],am_liam:["US","en-US"],am_onyx:["US","en-US"],af_heart:["US","en-US"],af_bella:["US","en-US"],af_nicole:["US","en-US"],af_nova:["US","en-US"],af_sarah:["US","en-US"],bf_emma:["GB","en-GB"],bf_lily:["GB","en-GB"],bm_george:["GB","en-GB"],bm_daniel:["GB","en-GB"],bm_fable:["GB","en-GB"],ef_dora:["ES","es"],em_alex:["ES","es"],ff_siwis:["FR","fr"],hf_alpha:["IN","hi"],hm_omega:["IN","hi"],if_sara:["IT","it"],im_nicola:["IT","it"],jf_alpha:["JP","ja"],jm_kumo:["JP","ja"],pf_dora:["BR","pt-BR"],pm_alex:["BR","pt-BR"],zf_xiaobei:["CN","zh"],zm_yunjian:["CN","zh"]};
+$("voice").addEventListener("change",()=>{const m=voiceMeta[$("voice").value];if(m){$("country").value=m[0];$("language").value=m[1]}});
+$("country").addEventListener("change",()=>{const v=Object.entries(voiceMeta).find(([,m])=>m[0]===$("country").value)?.[0];if(v){$("voice").value=v;$("language").value=voiceMeta[v][1]}});
+$("language").addEventListener("change",()=>{const v=Object.entries(voiceMeta).find(([,m])=>m[1]===$("language").value)?.[0];if(v){$("voice").value=v;$("country").value=voiceMeta[v][0]}});
+document.querySelectorAll(".voice").forEach(b=>b.onclick=()=>{document.querySelectorAll(".voice").forEach(x=>x.classList.remove("active"));b.classList.add("active");$("voice").value=b.dataset.v});
+$("voice").onchange=e=>document.querySelectorAll(".voice").forEach(b=>b.classList.toggle("active",b.dataset.v===e.target.value));
+function splitText(text,max=380){
+ const paras=text.replace(/\r/g,"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean), out=[];
+ for(const para of (paras.length?paras:[text.trim()])) {
+   if(para.length<=max){out.push(para);continue}
+   const sentences=para.match(/[^.!?。！？]+[.!?。！？]+|[^.!?。！？]+$/g)||[para];let buf="";
+   for(const sent of sentences){if((buf+" "+sent).trim().length>max&&buf){out.push(buf.trim());buf=sent}else buf=(buf+" "+sent).trim()}
+   if(buf)out.push(buf);
+ }
+ return out.filter(Boolean);
+}
+function wavBlob(chunks,sr=24000){
+ let total=chunks.reduce((n,a)=>n+a.length,0), pcm=new Int16Array(total),o=0;
+ for(const a of chunks){for(let i=0;i<a.length;i++){let v=Math.max(-1,Math.min(1,a[i]));pcm[o++]=v<0?v*32768:v*32767}}
+ const b=new ArrayBuffer(44+pcm.length*2),v=new DataView(b);
+ const ws=(p,x)=>{for(let i=0;i<x.length;i++)v.setUint8(p+i,x.charCodeAt(i))},w32=(p,x)=>v.setUint32(p,x,true),w16=(p,x)=>v.setUint16(p,x,true);
+ ws(0,"RIFF");w32(4,36+pcm.length*2);ws(8,"WAVE");ws(12,"fmt ");w32(16,16);w16(20,1);w16(22,1);w32(24,sr);w32(28,sr*2);w16(32,2);w16(34,16);ws(36,"data");w32(40,pcm.length*2);
+ new Uint8Array(b,44).set(new Uint8Array(pcm.buffer));return new Blob([b],{type:"audio/wav"});
+}
+async function getDB(){return new Promise((res,rej)=>{const r=indexedDB.open("muzjetai-tts",1);r.onupgradeneeded=()=>r.result.createObjectStore("audio");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function saveLatest(blob){const db=await getDB();await new Promise((res,rej)=>{const r=db.transaction("audio","readwrite").objectStore("audio").put(blob,"latest");r.onsuccess=res;r.onerror=()=>rej(r.error)})}
+async function loadEngine(){
+ if(tts)return tts;
+ $("status").textContent="Loading voice model… first load downloads it once (about 90 MB), then it is cached.";
+ if(navigator.gpu){
+  try{tts=await KokoroTTS.from_pretrained("onnx-community/Kokoro-82M-v1.0-ONNX",{dtype:"fp32",device:"webgpu"});engineName="WebGPU (fastest)";return tts}catch(e){console.warn("WebGPU failed, using WASM",e)}
+ }
+ tts=await KokoroTTS.from_pretrained("onnx-community/Kokoro-82M-v1.0-ONNX",{dtype:"q8",device:"wasm"});engineName="WASM (slower — try Chrome/Edge on a computer for WebGPU)";return tts;
+}
+$("generate").onclick=async()=>{
+ const text=$("text").value.trim();if(!text)return alert("Paste your narration first.");
+ stopped=false;$("generate").disabled=true;$("stop").disabled=false;$("download").disabled=true;$("useVideo").disabled=true;
+ try{
+  const engine=await loadEngine(), chunks=splitText(text), audios=[],voice=$("voice").value,speed=Number($("speed").value),t0=performance.now();
+  for(let i=0;i<chunks.length;i++){
+   if(stopped)throw new Error("Generation stopped.");
+   const el=(performance.now()-t0)/1000,eta=i?Math.round(el/i*(chunks.length-i)):null;$("status").textContent=`Chunk ${i+1} of ${chunks.length} • ${engineName}`+(eta!=null?` • about ${eta>60?Math.round(eta/60)+" min":eta+" s"} left`:"");await new Promise(r=>setTimeout(r,0));
+   $("bar").style.width=Math.round(i/chunks.length*100)+"%";
+   const a=await engine.generate(chunks[i],{voice,speed});
+   audios.push(a.audio instanceof Float32Array?a.audio:new Float32Array(a.audio));
+  }
+  currentBlob=wavBlob(audios,24000);$("player").src=URL.createObjectURL(currentBlob);$("player").classList.remove("hidden");$("bar").style.width="100%";$("status").textContent=`Done — ${chunks.length} chunks combined into one WAV file.`;
+  $("download").disabled=false;$("useVideo").disabled=false;await saveLatest(currentBlob);
+ }catch(e){$("status").textContent=e.message||"Could not generate speech. Try Chrome/Edge with WebGPU or a shorter test.";console.error(e)}
+ finally{$("generate").disabled=false;$("stop").disabled=true}
+};
+$("stop").onclick=()=>{stopped=true};
+$("download").onclick=()=>{if(!currentBlob)return;const a=document.createElement("a");a.href=URL.createObjectURL(currentBlob);a.download="muzjetai-text-to-speech.wav";a.click()};
+$("useVideo").onclick=async()=>{if(!currentBlob)return;await saveLatest(currentBlob);location.href="/ai-video/#tts"};
+
+$("instant").onclick=()=>{
+ const synth=window.speechSynthesis;if(!synth)return alert("Your browser has no built-in voices.");
+ if(synth.speaking){synth.cancel();$("instant").textContent="⚡ Instant preview";return}
+ const text=$("text").value.trim().slice(0,600);if(!text)return alert("Paste your narration first.");
+ const u=new SpeechSynthesisUtterance(text),lang=$("language").value;u.lang=lang==="en-US"?"en-US":lang;u.rate=Number($("speed").value);
+ const want=voiceMeta[$("voice").value]?.[1]||lang,male=/_m|^[a-z]m_/.test($("voice").value);
+ const vs=synth.getVoices().filter(v=>v.lang.toLowerCase().startsWith(want.slice(0,2).toLowerCase()));
+ const pick=vs.find(v=>male&&/male|david|mark|guy|daniel|george|alex|google uk english male/i.test(v.name))||vs[0];if(pick)u.voice=pick;
+ u.onend=()=>$("instant").textContent="⚡ Instant preview";$("instant").textContent="■ Stop preview";synth.speak(u);
+ $("status").textContent="Instant preview uses your device voice. Use Generate Voiceover for the real Kokoro voice and a downloadable WAV.";
+};
+</script>
+<script src="/shared/ai-writer.js"></script><script>
+(function(){
+  function addWriter(){
+    const ta=document.getElementById('text'); if(!ta || document.getElementById('muzjet-context-writer')) return;
+    const wrap=document.createElement('div'); wrap.id='muzjet-context-writer'; wrap.style.cssText='margin:8px 0;display:flex;gap:8px;flex-wrap:wrap';
+    const b=document.createElement('button'); b.type='button'; b.textContent='✍️ AI Write Narration'; b.className='btn';
+    b.onclick=()=>window.MuzjetAIWriter.open({type:'YouTube Script',topic:`Write narration for this voiceover. Topic: ${document.querySelector('#text')?.value || 'Create an engaging narration; replace this with my topic.'}`,onUse:(text)=>{ta.value=text;ta.dispatchEvent(new Event('input',{bubbles:true}));ta.dispatchEvent(new Event('change',{bubbles:true}));}});
+    wrap.appendChild(b); ta.parentNode.insertBefore(wrap,ta);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',addWriter); else addWriter();
+})();
+</script><script>
+(function(){
+ function addShortcut(){
+  if(document.getElementById('muzjet-global-writer')) return;
+  const b=document.createElement('a'); b.id='muzjet-global-writer'; b.href='/ai-writer/'; b.textContent='✍️ AI Writer';
+  b.style.cssText='position:fixed;right:16px;bottom:16px;z-index:9990;background:#3568e8;color:#fff;text-decoration:none;padding:11px 14px;border-radius:999px;font:700 14px system-ui;box-shadow:0 8px 25px rgba(0,0,0,.18)';
+  document.body.appendChild(b);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addShortcut);else addShortcut();
+})();
+</script></body></html>
